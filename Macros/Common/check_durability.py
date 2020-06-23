@@ -1,7 +1,7 @@
 # Name: Durability check
 # Description: Checks all items for durability and show alerts
 # Author: Mordor
-# Era: Any
+# Era: AOS
 
 from Assistant import Engine
 
