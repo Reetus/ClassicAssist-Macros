@@ -17,7 +17,7 @@ If you macro is shard specific:
 # Shard: OSI
 ```
 
-Or if it Era specific:
+Or if it era specific:
 
 ```py
 # Name: Delucia Bulls
