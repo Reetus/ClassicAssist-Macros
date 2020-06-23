@@ -11,7 +11,7 @@
         "FileName":  "Advanced\\Examples\\linq_enumerate_mobiles.py",
         "Size":  666,
         "SHA1":  "83EF9CFE457FDC0870749DA6A43DB426D9DA4DDF",
-        "ModifiedDate":  "2020-06-23T13:17:38.5002523+00:00"
+        "ModifiedDate":  "2020-06-23T16:02:56.9355209+00:00"
     },
     {
         "Name":  "Packet wait play sound",
@@ -25,6 +25,20 @@
         "FileName":  "Advanced\\Examples\\playsound_trade_window.py",
         "Size":  422,
         "SHA1":  "292CA1DE19863C1CC7F7D2E7FCC48DD05DD79C78",
-        "ModifiedDate":  "2020-06-23T13:17:38.5002523+00:00"
+        "ModifiedDate":  "2020-06-23T16:02:56.9355209+00:00"
+    },
+    {
+        "Name":  "Faster Run",
+        "Description":  "Run without waiting for movement accepted packets to speed up movement",
+        "Author":  "Reetus",
+        "Era":  "Any",
+        "Categories":  [
+                           "Advanced",
+                           "Movement"
+                       ],
+        "FileName":  "Advanced\\Movement\\faster_run.py",
+        "Size":  678,
+        "SHA1":  "5774224E17B72177B4637C9B40C0B5574C9D9B88",
+        "ModifiedDate":  "2020-06-23T16:02:56.9355209+00:00"
     }
 ]
