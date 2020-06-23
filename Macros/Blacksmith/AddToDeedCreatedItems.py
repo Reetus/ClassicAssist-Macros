@@ -1,7 +1,7 @@
 # Name: Add to deed created items
 # Description: Search and add items corresponding to prompted deed. Gumps for deed may vary in different shards.
 # Author: Aru
-# Era: Any
+# Era: AOS
 
 import clr
 import System

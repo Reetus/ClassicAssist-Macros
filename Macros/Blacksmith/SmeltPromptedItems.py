@@ -1,7 +1,7 @@
 # Name: Smelt all items by prompted type
 # Description: Search and smelt all items (by type) from backpack. Uses prompt for get item type. Change {hammer_name} to current name in shard of hammer. Gumps may vary in other shards.
 # Author: Aru
-# Era: Any
+# Era: AOS
 
 import clr
 import System
