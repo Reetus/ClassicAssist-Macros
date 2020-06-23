@@ -2,7 +2,7 @@
 
 ### Contributing
 
-To contribute to this repository, send a pull request with your macro placed in an a directory structure that describes the category of your macro, such as 'Skills\Animal Taming'
+To contribute to this repository, send a pull request with your macro placed in the 'Macros' directory with a directory structure that describes the category of your macro, such as 'Skills\Animal Taming'
 
 ### File Header
 
