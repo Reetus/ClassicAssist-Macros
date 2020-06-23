@@ -1,0 +1,64 @@
+name: Generate Metadata
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}      
+    - name: Generate Metadata
+      run: |
+        cd Macros
+        $files = (Get-ChildItem . -Recurse -Filter *.py | Resolve-Path -Relative)
+        $filespsobject = @()
+        foreach ( $file in $files )
+        {
+          $f = Get-ItemProperty $file          
+          if (!($f -is [System.IO.DirectoryInfo]))
+          {           
+            $categories = New-Object System.Collections.ArrayList      
+            
+            $array = $file.split("\")  | select-object -skip 1 | select-object -SkipLast 1
+            
+            $names = @("Name","Description", "Author","Shard","Era")
+
+            $item = New-Object -Typename PSObject
+            
+            foreach ( $name in $names )
+            {
+
+                $regex = "^#\s$($name):\s(.*)$"
+                $m = (select-string -Path $file -Pattern $regex )
+                if ( $m )
+                {
+                    $item | add-member -MemberType NoteProperty -Name $name -value $m.Matches.Groups[1].Value
+                }
+            }            
+
+            $item | add-member -MemberType NoteProperty -Name Categories -value $array
+            $item | add-member -MemberType NoteProperty -Name FileName -value (($file) -replace "\.\\","")
+            $item | add-member -MemberType NoteProperty -Name Size -value $f.Length
+            $item | add-member -MemberType NoteProperty -Name SHA1 -value (get-filehash -path $f.FullName -Algorithm sha1).Hash
+            $item | add-member -MemberType NoteProperty -Name ModifiedDate -value $f.LastWriteTime.ToString("o")
+
+            $filespsobject += $item
+          }
+
+          $json = $filespsobject | convertto-json
+        }
+        $json | Out-File metadata.json      
+      shell: powershell
+    - name: Add changes
+      run: |
+        git add *
+        git config --global user.name 'Metadata Generator'
+        git config --global user.email 'reetus@users.noreply.github.com'
+        git commit -am "Generate metadata..."
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force: true

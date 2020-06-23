@@ -1,0 +1,78 @@
+name: Ensure Header
+on:
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}      
+    - name: Ensure Header
+      run: |
+        cd Macros
+        
+        $files = (Get-ChildItem . -Recurse -Filter *.py | Resolve-Path -Relative)
+
+        foreach ( $file in $files )
+        {
+          $f = Get-ItemProperty $file          
+          if (!($f -is [System.IO.DirectoryInfo]))
+          {           
+            $names = @("Name","Description", "Author", "Shard", "Era")
+
+            $item = New-Object -Typename PSObject
+            
+            foreach ( $name in $names )
+            {
+
+                $regex = "^#\s$($name):\s(.*)$"
+                $m = (select-string -Path $file -Pattern $regex )
+                if ( $m )
+                {
+                    $item | add-member -MemberType NoteProperty -Name $name -value $m.Matches.Groups[1].Value
+                }
+            }
+            
+            $required_names = @("Name","Description", "Author")
+
+            foreach ($rn in $required_names)
+            {
+                if (!($item.PSobject.Properties.name -match $rn))
+                {
+                    echo $file
+                    Write-Host 'Header value' $rn 'is required'
+                    exit 1
+                }
+            }
+
+            if (!($item.PSobject.Properties.name -match 'Shard') -And !($item.PSobject.Properties.name -match 'Era'))
+            {
+                Write-Host 'Either Shard or Era must be present'
+                exit 1
+            }
+            
+            $valid_eras = @("T2A", "UOR", "AOS", "SA", "HS", "TOL", "Any")
+
+            if (($item.PSobject.Properties.name -match 'Era'))
+            {
+                $valid = $false
+
+                foreach ($era in $valid_eras)
+                {
+                    if ($item.Era -eq $era)
+                    {
+                        $valid = $true
+                    }
+                }
+
+                if ($valid -eq $false)
+                {
+                    Write-Host Era value $item.Era is not valid
+                    exit 1
+                }
+            }            
+          }
+        }
+      shell: powershell
