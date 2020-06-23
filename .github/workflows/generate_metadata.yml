@@ -49,7 +49,7 @@ jobs:
 
           $json = $filespsobject | convertto-json
         }
-        $json | Out-File metadata.json      
+        $json | Out-File metadata.json -Encoding utf8     
       shell: powershell
     - name: Add changes
       run: |
