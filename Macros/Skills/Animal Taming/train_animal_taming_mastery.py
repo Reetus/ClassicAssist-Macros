@@ -1,7 +1,7 @@
 # Name: Animal Taming training from 90 to cap
 # Description: Uses Animal Taming master ability on target to train Animal Taming from 90 to cap
 # Author: Mordor
-# Era: Any
+# Era: TOL
 
 while not Dead('self') and Skill('Animal Taming') < SkillCap('Animal Taming'):
     target = 0x5eafbe3  # target for training
