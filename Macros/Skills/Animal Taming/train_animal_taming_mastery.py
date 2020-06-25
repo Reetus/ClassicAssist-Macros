@@ -4,14 +4,14 @@
 # Era: TOL
 
 while not Dead('self') and Skill('Animal Taming') < SkillCap('Animal Taming'):
-    target = 0x5eafbe3  # target for training
+    target = PromptAlias("skill_target")  # target for training
     spell_mana_cost = 32  # spell mana cost
 
     if Mana('self') > spell_mana_cost:
         Cast('Combat Training', target)
         Pause(1000)
     else:
-        while not BuffExists('Active Meditation') or Mana('self') == MaxMana('self'):
+        while not BuffExists('Active Meditation') or not Mana('self') == MaxMana('self'):
             UseSkill('Meditation')
             Pause(4000)
         while Mana('self') < MaxMana('self'):
