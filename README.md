@@ -2,6 +2,8 @@
 
 ### Contributing
 
+[Video Instructional](https://www.youtube.com/watch?v=KqCGBJo-O_I&feature=youtu.be)
+
 To contribute to this repository, send a pull request with your macro placed in the 'Macros' directory with a directory structure that describes the category of your macro, such as 'Skills\Animal Taming'
 
 ### File Header
