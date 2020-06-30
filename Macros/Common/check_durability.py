@@ -1,10 +1,12 @@
-# Name: Durability check
-# Description: Checks all items for durability and show alerts
-# Author: Mordor
-# Era: AOS
+'''
+Author: Denis Savchuk
+Other Contributors: 
+Last Contribution By: Mordor - June 20, 2020
+
+Description: Check all items for durability
+'''
 
 from Assistant import Engine
-
 layers = [
     'OneHanded',
     'TwoHanded',
@@ -48,18 +50,17 @@ def property_exists(serial, cliloc):
 
 
 def check_durability():
-    while True:
-        while not Dead('self'):
-            for layer in layers:
-                if FindLayer(layer) and property_exists(GetAlias('found'), 'durability'):
-                    durability = PropertyValue[int]('found', 'durability')
-                    Pause(500)
+    while not Dead('self'):
+        for layer in layers:
+            if FindLayer(layer) and property_exists(GetAlias('found'), 1060639):
+                durability = PropertyValue[int]('found', 'durability')
+                Pause(500)
 
-                    if durability != None and durability < minDurability:
-                        HeadMsg("ATTENTION!! \"" + layer + "\": " +
-                                str(durability), 'self')
+                if durability < minDurability:
+                    HeadMsg("ATTENTION!! \"" + layer + "\": " +
+                            str(durability), 'self')
 
-                Pause(checkDelay)
+        Pause(checkDelay)
 
 
 check_durability()

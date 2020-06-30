@@ -18,15 +18,7 @@ def train_peacemaking():
     global journal_entry_delay_milliseconds
     global skill_cap
 
-    if not ListExists('instruments'):
-        CreateList('instruments')
-        PushList('instruments', 0x2805)  # bamboo flute
-        PushList('instruments', 0x0e9c)  # drum
-        PushList('instruments', 0x0eb3)  # lute
-        PushList('instruments', 0xeb2)  # lap harp
-        PushList('instruments', 0x0eb1)  # standing harp
-        PushList('instruments', 0x0e9e)  # tambourine
-        PushList('instruments', 0x0e9d)  # tambourine (tassle)
+    instruments = [0x2805, 0x0e9c, 0x0eb3, 0xeb2, 0x0eb1, 0x0e9e, 0x0e9d]
 
     if Skill('Peacemaking') == skill_cap:
         MessageBox("Done", 'You\'ve already maxed out Peacemaking!')
@@ -50,7 +42,7 @@ def train_peacemaking():
 
             # Handle the Journal response
             if InJournal('What instrument shall you play?'):
-                for i in GetList("instruments"):
+                for i in instruments:
                     if FindType(i, -1, "backpack"):
                         break
 
