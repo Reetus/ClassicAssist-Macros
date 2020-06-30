@@ -1,10 +1,7 @@
-'''
-Author: Denis Savchuk
-Other Contributors: 
-Last Contribution By: Mordor - June 20, 2020
-
-Description: Check all items for durability
-'''
+# Name: Durability check
+# Description: Checks all items for durability and show alerts
+# Author: Mordor
+# Era: AOS
 
 from Assistant import Engine
 layers = [
