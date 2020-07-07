@@ -56,6 +56,7 @@ def check_durability():
                 if durability < minDurability:
                     HeadMsg("ATTENTION!! \"" + layer + "\": " +
                             str(durability), 'self')
+                    MoveItem('found', 'self')
 
         Pause(checkDelay)
 
