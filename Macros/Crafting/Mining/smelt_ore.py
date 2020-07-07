@@ -26,8 +26,11 @@ for ore in oreTypes:
 		WaitForTarget(5000)
 		Target('forge')
 		Pause(1000)
-		#IgnoreObject('found')
 		while FindType(0x1bf2, 3):
+			MoveItem('found', 'ore chest')
+			Pause(1000)
+			IgnoreObject('found')
+		while FindType(0x1bf2, -1, 'backpack'):
 			MoveItem('found', 'ore chest')
 			Pause(1000)
 			IgnoreObject('found')
