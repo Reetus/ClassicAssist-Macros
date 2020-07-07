@@ -17,6 +17,8 @@ HEAL_AT = 90  # HP
 ONE_ENEMY_FARM = False  # Set to True if you fight with one type on enemies
 PUNCH_RANGE = 1
 PLAYER_STUCK_TIMER_MILLISECONDS = 5000
+HOME_RUNE_OR_BOOK = PromptAlias(
+    'home_rune_or_book')  # set rune or book to recall
 
 
 class SpellFn:
@@ -28,6 +30,7 @@ class SpellFn:
     MOVE = 'MOVE'
     CLEAR_TARGET = 'CLEAR_TARGET'
     SECONDARY_ATTACK = 'SECONDARY_ATTACK'
+    HOME_RECALL = 'HOME_RECALL'
 
 
 class SpellInfo:
@@ -46,6 +49,8 @@ class SpellInfo:
             attack(target)
         elif self._spell_fn == SpellFn.SECONDARY_ATTACK:
             secondary_ability()
+        elif self._spell_fn == SpellFn.HOME_RECALL:
+            home_recall()
         elif self._spell_fn == SpellFn.CLEAR_TARGET:
             clear_target()
         elif self._spell_fn == SpellFn.CLICKING:
@@ -120,6 +125,9 @@ class Sampire_AI:
         self._query = []
         self.search_distance = 1
         self._rotation = sorted([
+            SpellInfo('Home Recall', 20, 0, WAITING, 1,
+                      self._home_recall_check,
+                      SpellFn.HOME_RECALL),
             SpellInfo('Confidence', 10, 25, WAITING, 1,
                       self._cast_confidence_heal,
                       SpellFn.BUSHIDO),
@@ -222,6 +230,9 @@ class Sampire_AI:
     def _cast_whirlwind(self):
         return self._enemies.are_amount_more(2)
 
+    def _home_recall_check(self):
+        return self._enemies.are_amount_eq(0) and DiffWeight() <= 20
+
 
 # Helper functions
 
@@ -263,6 +274,11 @@ def clear_target():
 
 def secondary_ability():
     SetAbility("secondary")
+
+
+def home_recall():
+    Cast('Sacred Journey', HOME_RUNE_OR_BOOK)
+    Pause(5000)
 
 
 # MAIN function
