@@ -1,5 +1,5 @@
 # Name: Smelt Ore
-# Description: Smelt ore from a container and put ingots on ground back into container
+# Description: Smelt ore from a container and put ingots into container
 # Author: Reetus
 # Era: Any
 
