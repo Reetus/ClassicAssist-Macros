@@ -1,7 +1,7 @@
 # Name: Hide All Multis
 # Description: Issues a remove object on all multis in range, useful for looking inside the walls of houses
 # Author: Reetus
-# Shard: Any
+# Era: Any
 
 import clr
 import System
