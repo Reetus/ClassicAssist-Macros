@@ -1,0 +1,40 @@
+# Name: Scavenger
+# Description: meh
+# Author: QK
+# Era: Any
+import clr
+import System
+clr.AddReference("System.Core")
+clr.ImportExtensions(System.Linq)
+from Assistant import Engine
+
+# Script variables configuration
+bandages = [0xe21] # bandages
+reagents = [0xf7a, 0xf86, 0xf7b, 0xf85, 0xf8c, 0xf84, 0xf8d, 0xf88] # regs
+gems = [0xf2d, 0xf10, 0xf13, 0xf15, 0xf25, 0xf26, 0xf19, 0xf16, 0xf21] # gems
+gold = [0xeed] # gold
+skillScrolls = [0x2260]	# skill scrolls
+metaFood = [0xc65, 0x422b] # dragon fruit # uncooked crabs
+
+lootList = reagents + gold
+
+
+def GetObj(ids = None, hues = None, flag = None, itemList = None, includeIgnored = False, maxDistance = 32, orderBy = lambda m: m.Distance):
+	objects = Engine.Items.Where(lambda m: (ids == None or m.ID == hex(ids))
+												and (itemList == None or itemList.Contains(m.ID))
+												#and (hues == None or m.Graphic == hex(hues))
+												and m.Flags == flag
+                                             	and m.Distance < maxDistance
+												and (includeIgnored or not InIgnoreList(m.Serial))).OrderBy(orderBy)
+	return objects
+	
+	
+
+for obj in GetObj(itemList = lootList, maxDistance = 2, flag = 32):
+	
+	HeadMsg((obj.Name + " / " +  str(obj.Distance)), obj)
+	MoveItem(obj, "backpack")
+	Pause(550)
+
+	
+	
