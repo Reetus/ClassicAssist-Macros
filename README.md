@@ -4,6 +4,8 @@
 
 [Video Instructional](https://www.youtube.com/watch?v=KqCGBJo-O_I&feature=youtu.be)
 
+[Video Instructional using new share button in Macros tab](https://www.youtube.com/watch?v=wfOUYc4iF0g)
+
 To contribute to this repository, send a pull request with your macro placed in the 'Macros' directory with a directory structure that describes the category of your macro, such as 'Skills\Animal Taming'
 
 ### File Header
