@@ -46,7 +46,6 @@ if not res:
 
 info = potionInfo[selection]
 
-
 (res, name) = MessagePrompt("Amount?", str(makeMax))
 
 if not res:
@@ -103,7 +102,7 @@ while makeCount < makeMax:
 			makeCount = makeCount + 1
 			
 	if Weight() > MaxWeight() - 100:
-		MoveType(info.itemid, "backpack", resChest)
+		MoveType(info.itemid, "backpack", GetAlias('resChest'))
 		Pause(2000)
 		
 print 'Finished'
