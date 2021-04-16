@@ -15,6 +15,18 @@ craftGumpId = 0x38920abd
 
 if not FindAlias('resChest'):
 	resChest = PromptAlias('resChest')
+import clr
+import System
+clr.AddReference("System.Core")
+clr.ImportExtensions(System.Linq)
+from Assistant import Engine
+
+makeMax = 2500
+makeCount = 0
+craftGumpId = 0x38920abd
+
+if not FindAlias('resChest'):
+	resChest = PromptAlias('resChest')
 
 def Tinker(category, button):
 	UseType(0x1eb8)	
@@ -103,7 +115,7 @@ while makeCount < makeMax:
 			makeCount = makeCount + 1
 			
 	if Weight() > MaxWeight() - 100:
-		MoveType(info.itemid, "backpack", resChest)
+		MoveType(info.itemid, "backpack", GetAlias('resChest'))
 		Pause(2000)
 		
 print 'Finished'
