@@ -15,18 +15,6 @@ craftGumpId = 0x38920abd
 
 if not FindAlias('resChest'):
 	resChest = PromptAlias('resChest')
-import clr
-import System
-clr.AddReference("System.Core")
-clr.ImportExtensions(System.Linq)
-from Assistant import Engine
-
-makeMax = 2500
-makeCount = 0
-craftGumpId = 0x38920abd
-
-if not FindAlias('resChest'):
-	resChest = PromptAlias('resChest')
 
 def Tinker(category, button):
 	UseType(0x1eb8)	
@@ -57,7 +45,6 @@ if not res:
 	Stop()
 
 info = potionInfo[selection]
-
 
 (res, name) = MessagePrompt("Amount?", str(makeMax))
 
