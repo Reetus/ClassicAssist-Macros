@@ -16,6 +16,13 @@ craftGumpId = 0x38920abd
 if not FindAlias('resChest'):
 	resChest = PromptAlias('resChest')
 
+def Tinker(category, button):
+	UseType(0x1eb8)	
+	ReplyGump(craftGumpId, category)
+	WaitForGump(craftGumpId, 5000)
+	ReplyGump(craftGumpId, button)
+	WaitForGump(craftGumpId, 5000)
+
 class PotionInfo:
 	def __init__(self, name, itemid, hue, gumpButton1, gumpButton2, reagent):
 		self.name = name
@@ -100,10 +107,3 @@ while makeCount < makeMax:
 		Pause(2000)
 		
 print 'Finished'
-
-def Tinker(category, button):
-	UseType(0x1eb8)	
-	ReplyGump(craftGumpId, category)
-	WaitForGump(craftGumpId, 5000)
-	ReplyGump(craftGumpId, button)
-	WaitForGump(craftGumpId, 5000)
