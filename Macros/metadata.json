@@ -11,7 +11,7 @@
         "FileName":  "Advanced\\Examples\\find_items_by_name.py",
         "Size":  607,
         "SHA1":  "DB3E83C863CD3695B723A8713FBE4C2A6F98E06C",
-        "ModifiedDate":  "2021-04-16T06:03:12.3769827+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7817576+00:00"
     },
     {
         "Name":  "Hide All Multis",
@@ -25,7 +25,7 @@
         "FileName":  "Advanced\\Examples\\hide_all_houses.py",
         "Size":  447,
         "SHA1":  "8679029AF21D4CAC1B7AB3CE9B6190FEABDE5D7D",
-        "ModifiedDate":  "2021-04-16T06:03:12.3779818+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7817576+00:00"
     },
     {
         "Name":  "Linq Enumerate Mobiles",
@@ -39,7 +39,7 @@
         "FileName":  "Advanced\\Examples\\linq_enumerate_mobiles.py",
         "Size":  2073,
         "SHA1":  "3267A4A280275630E9EA5534854F273241191EFF",
-        "ModifiedDate":  "2021-04-16T06:03:12.3779818+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7827573+00:00"
     },
     {
         "Name":  "Packet wait play sound",
@@ -53,7 +53,7 @@
         "FileName":  "Advanced\\Examples\\playsound_trade_window.py",
         "Size":  422,
         "SHA1":  "292CA1DE19863C1CC7F7D2E7FCC48DD05DD79C78",
-        "ModifiedDate":  "2021-04-16T06:03:12.3779818+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7827573+00:00"
     },
     {
         "Name":  "Animal Lore Gump HP",
@@ -67,7 +67,7 @@
         "FileName":  "Advanced\\Gumps\\extract_hp_alore_gump.py",
         "Size":  722,
         "SHA1":  "E76E7BB6AAC6258E9C36C86485C22F4729ED1DD9",
-        "ModifiedDate":  "2021-04-16T06:03:12.3789819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7827573+00:00"
     },
     {
         "Name":  "Faster Run",
@@ -81,7 +81,7 @@
         "FileName":  "Advanced\\Movement\\faster_run.py",
         "Size":  678,
         "SHA1":  "5774224E17B72177B4637C9B40C0B5574C9D9B88",
-        "ModifiedDate":  "2021-04-16T06:03:12.3789819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7837578+00:00"
     },
     {
         "Name":  "Sampire AI 0.1.2",
@@ -95,7 +95,7 @@
         "FileName":  "Advanced\\Sampire\\sampire_ai.py",
         "Size":  9306,
         "SHA1":  "82EB8FEB31C4E871D6394CC002CAEC6846C2DC22",
-        "ModifiedDate":  "2021-04-16T06:03:12.3789819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7837578+00:00"
     },
     {
         "Name":  "Durability check",
@@ -106,7 +106,7 @@
         "FileName":  "Common\\check_durability.py",
         "Size":  1409,
         "SHA1":  "F3E1BB374BDEA0CB461D28C29112080B4E6C1971",
-        "ModifiedDate":  "2021-04-16T06:03:12.3799820+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7837578+00:00"
     },
     {
         "Name":  "Mobile Query",
@@ -117,7 +117,7 @@
         "FileName":  "Common\\mobile_query.py",
         "Size":  455,
         "SHA1":  "E53260F002E43710DF8E34B47CC52E75B0FA02DD",
-        "ModifiedDate":  "2021-04-16T06:03:12.3799820+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7847572+00:00"
     },
     {
         "Name":  "Lumberjacker ",
@@ -128,7 +128,7 @@
         "FileName":  "Crafting\\HUO-Lumberjacker.py",
         "Size":  2494,
         "SHA1":  "54F085C117EA68B1B0704342DC93E09DE3F9C3CA",
-        "ModifiedDate":  "2021-04-16T06:03:12.3809817+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7857577+00:00"
     },
     {
         "Name":  "Potion Factory",
@@ -141,8 +141,8 @@
                        ],
         "FileName":  "Crafting\\Alchemy\\potion_crafter.py",
         "Size":  2630,
-        "SHA1":  "0A894AEEDD38112762C905ED4CA3D38A0E764D6E",
-        "ModifiedDate":  "2021-04-16T06:03:12.3799820+00:00"
+        "SHA1":  "A198B56E020A172A3ACF934D4E40598F7B231BF9",
+        "ModifiedDate":  "2021-04-16T06:07:03.7847572+00:00"
     },
     {
         "Name":  "Add to deed created items",
@@ -156,7 +156,7 @@
         "FileName":  "Crafting\\Blacksmith\\AddToDeedCreatedItems.py",
         "Size":  1349,
         "SHA1":  "EE70164CBD49CEE805ACDE5153BE46FD25A024A9",
-        "ModifiedDate":  "2021-04-16T06:03:12.3809817+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7847572+00:00"
     },
     {
         "Name":  "Smelt all items by prompted type",
@@ -170,7 +170,7 @@
         "FileName":  "Crafting\\Blacksmith\\SmeltPromptedItems.py",
         "Size":  1554,
         "SHA1":  "97C4EB329EB05A5E97CE65249CF7467913007DEC",
-        "ModifiedDate":  "2021-04-16T06:03:12.3809817+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7857577+00:00"
     },
     {
         "Name":  "Smelt Ore",
@@ -184,7 +184,7 @@
         "FileName":  "Crafting\\Mining\\smelt_ore.py",
         "Size":  858,
         "SHA1":  "2A16A300A498ECC4A71F48CC06084D859ACBA380",
-        "ModifiedDate":  "2021-04-16T06:03:12.3809817+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7867578+00:00"
     },
     {
         "Name":  "Bandage Dual \u0026 Solo Pets",
@@ -195,7 +195,7 @@
         "FileName":  "PVM\\bandage_pets.py",
         "Size":  6299,
         "SHA1":  "723CC6EF45DEFFE3C4CD423F7218D2F38C9A5A94",
-        "ModifiedDate":  "2021-04-16T06:03:12.3819818+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7867578+00:00"
     },
     {
         "Name":  "Animal Taming training",
@@ -209,7 +209,7 @@
         "FileName":  "Skills\\Animal Taming\\train_animal_taming.py",
         "Size":  20602,
         "SHA1":  "98F3DD4FF46BAC715DA7D20FF693030E7A8D6910",
-        "ModifiedDate":  "2021-04-16T06:03:12.3829822+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7877686+00:00"
     },
     {
         "Name":  "Animal Taming training from 90 to cap",
@@ -223,7 +223,7 @@
         "FileName":  "Skills\\Animal Taming\\train_animal_taming_mastery.py",
         "Size":  706,
         "SHA1":  "5D18982F9059D0A7407EEBA979E51739D19738D8",
-        "ModifiedDate":  "2021-04-16T06:03:12.3829822+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7877686+00:00"
     },
     {
         "Name":  "Discordance training",
@@ -237,7 +237,7 @@
         "FileName":  "Skills\\Discordance\\train_discordance.py",
         "Size":  2520,
         "SHA1":  "A3B27DD931F0D8E8A24026B250867093047F7493",
-        "ModifiedDate":  "2021-04-16T06:03:12.3829822+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7887581+00:00"
     },
     {
         "Name":  "Evaluating Intelligence training to cap",
@@ -251,7 +251,7 @@
         "FileName":  "Skills\\Evaluating Intelligence\\train_evaluating_intelligence.py",
         "Size":  576,
         "SHA1":  "28108EDDAAA8C7F6C7C4437C9B2E98AEB4BA35BC",
-        "ModifiedDate":  "2021-04-16T06:03:12.3839819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7887581+00:00"
     },
     {
         "Name":  "Healing Trainer",
@@ -265,7 +265,7 @@
         "FileName":  "Skills\\Healing\\healingtrainer.py",
         "Size":  814,
         "SHA1":  "8A6B7C960700ACDFF8A27800A50BD472E8794417",
-        "ModifiedDate":  "2021-04-16T06:03:12.3839819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7897577+00:00"
     },
     {
         "Name":  "Magery training to cap",
@@ -279,7 +279,7 @@
         "FileName":  "Skills\\Magery\\train_magery.py",
         "Size":  1665,
         "SHA1":  "4BC6231C5C45C57CAA344B0D4C9D49EA9084E0F1",
-        "ModifiedDate":  "2021-04-16T06:03:12.3839819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7897577+00:00"
     },
     {
         "Name":  "Mysticism training to cap",
@@ -293,7 +293,7 @@
         "FileName":  "Skills\\Mysticism\\train_mysticism.py",
         "Size":  1286,
         "SHA1":  "F6B21BA9450CFDA67D993FBCB7E3174B1A368C9D",
-        "ModifiedDate":  "2021-04-16T06:03:12.3849894+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7897577+00:00"
     },
     {
         "Name":  "Peacemaking training",
@@ -307,7 +307,7 @@
         "FileName":  "Skills\\Peacemaking\\train_peacemaking.py",
         "Size":  3056,
         "SHA1":  "37FD3B40A6E2A0E2FA1B82B6588EF0E27B5C9FA9",
-        "ModifiedDate":  "2021-04-16T06:03:12.3849894+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7907577+00:00"
     },
     {
         "Name":  "Provocation training",
@@ -321,7 +321,7 @@
         "FileName":  "Skills\\Provocation\\train_provocation.py",
         "Size":  2810,
         "SHA1":  "9A5F41F4D0844165CEDC08CAAFC7673685447FA9",
-        "ModifiedDate":  "2021-04-16T06:03:12.3849894+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7907577+00:00"
     },
     {
         "Name":  "Simple Miner",
@@ -332,7 +332,7 @@
         "FileName":  "Skills Crafting\\simpleminer.py",
         "Size":  484,
         "SHA1":  "1B39937F242E483186542F0D59297EFEA6E33D87",
-        "ModifiedDate":  "2021-04-16T06:03:12.3819818+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7867578+00:00"
     },
     {
         "Name":  "Combine Stacks",
@@ -343,6 +343,6 @@
         "FileName":  "Utility\\combinestacks.py",
         "Size":  1278,
         "SHA1":  "950996E70104A3483B02B21118087D52C00E88C7",
-        "ModifiedDate":  "2021-04-16T06:03:12.3859819+00:00"
+        "ModifiedDate":  "2021-04-16T06:07:03.7907577+00:00"
     }
 ]
