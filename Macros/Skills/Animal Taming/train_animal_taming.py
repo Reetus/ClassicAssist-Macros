@@ -531,6 +531,11 @@ def follow_rename_and_kill(animal_being_tamed):
     Pause(1000)
     Rename(animal_being_tamed, rename_tamed_animals_to)
     Pause(1000)
+    # Release pet
+    WaitForContext(animal_being_tamed, 8, 15000)
+    WaitForGump(0x909cc741, 5000)
+    ReplyGump(0x909cc741, 2)
+    Pause(1000)
 
     while Mana('self') < 40:
         Pause(1000)
