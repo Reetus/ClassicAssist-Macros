@@ -1,5 +1,7 @@
-# Author: raveX
+# Name: Durability check
 # Description: Smith BOD Filler
+# Author: raveX
+# Era: AOS
 
 SetQuietMode(True)
 
@@ -26,7 +28,7 @@ errorTextColor = 33
 smithGump 	= 0x38920abd
 tinkerGump 	= 0x38920abd
 BODGump 	= 0x5afbd742
-BODBookGump 	= 0x54f555df
+BODBookGump = 0x54f555df
 
 # *****Ingots******
 ingots = 0x1bf2
@@ -69,13 +71,13 @@ Longsword 	= SmithItem(0xf61,  22, 51)
 Scimitar 	= SmithItem(0x13b6, 22, 58)
 Viking 		= SmithItem(0x13b9, 22, 65)
 # *****Axes*****
-Axe 		= SmithItem(0xf49,  29, 2)
-BattleAxe 	= SmithItem(0xf47,  29, 9)
-DoubleAxe 	= SmithItem(0xf4b,  29, 16)
+Axe 			= SmithItem(0xf49,  29, 2)
+BattleAxe 		= SmithItem(0xf47,  29, 9)
+DoubleAxe 		= SmithItem(0xf4b,  29, 16)
 ExecutionerAxe 	= SmithItem(0xf45,  29, 23)
 LargeBattleAxe 	= SmithItem(0x13fb, 29, 30)
 TwoHandedAxe 	= SmithItem(0x1443, 29, 37)
-WarAxe 		= SmithItem(0x13b0, 29, 44)
+WarAxe 			= SmithItem(0x13b0, 29, 44)
 # *****Polearms*****
 Bardiche 	= SmithItem(0xf4d,  36, 2)
 Halberd 	= SmithItem(0x143e, 36, 23)
@@ -99,8 +101,8 @@ ChainmailLeggings 	= SmithItem(0x13be, 1, 37)
 ChainmailTunic 		= SmithItem(0x13bf, 1, 44)
 # *****Platemail*****
 PlateArms 	= SmithItem(0x1410, 1, 51)
-PlateGloves 	= SmithItem(0x1414, 1, 58)
-PlateGorget 	= SmithItem(0x1413, 1, 65)
+PlateGloves = SmithItem(0x1414, 1, 58)
+PlateGorget = SmithItem(0x1413, 1, 65)
 PlateLegs 	= SmithItem(0x1411, 1, 72)
 PlateTunic 	= SmithItem(0x1415, 1, 79)
 # *****Helms*****
@@ -110,7 +112,7 @@ Helmet 		= SmithItem(0x140a, 8, 16)
 NorseHelm 	= SmithItem(0x140e, 8, 23)
 PlateHelm 	= SmithItem(0x1412, 8, 30)
 # *****Shields*****
-Buckler 		= SmithItem(0x1b73, 15, 2)
+Buckler 			= SmithItem(0x1b73, 15, 2)
 BronzeShield 		= SmithItem(0x1b72, 15, 9)
 HeaterShield 		= SmithItem(0x1b76, 15, 16)
 MetalShield 		= SmithItem(0x1b7b, 15, 23)
