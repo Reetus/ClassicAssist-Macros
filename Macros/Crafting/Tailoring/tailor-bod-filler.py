@@ -5,15 +5,64 @@
 
 SetQuietMode(True)
 
+# ****************************************
+# To turn off/on the ingame help prompts *
+# ****************************************
+UseHelp = True
+# ****************************************
+# ****************************************
+
+
+msg = "Welcome to the Tailor BOD Filler macro.  This macro " \
+	  "will take BODs from a BOD book and fill them.  It " \
+	  "supports making any Tailor BOD, cloth, leather, bone, and " \
+	  "of any leather type.  Let's get started!"
+if UseHelp: ConfirmPrompt(msg)
+
+msg = "First we will want to know what BOD book you want to pull BODs " \
+      "out of to fill.  Be sure to set the filter on the book to the " \
+      "specific type of BODs you want to fill here. At a minimum, you will " \
+      "want to ensure you have selected Tailoring and Small BODs."
+      
 if not FindAlias('tailor bod source'):
+	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor bod source')
 
+msg = "Second, you will need to select a different book to hold the completed " \
+      "BODs you fill.  Make sure the book has plenty of room to hold all the " \
+      "BODs. I'm not handling you screwing that up in the macro." 
+      
 if not FindAlias('tailor bod destination'):
+	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor bod destination')
 
+msg = "Next, you need to select a container that will serve as your restock " \
+      "target.  In this container, you will want plenty of materials, such as cut cloth, " \
+      "leathers, and bone.  This all obviously depends on what BODs you are planning to fill " \
+      "Additionally, if you are going to tinker sewing kits, have plenty of ingots in this " \
+      "container as well. If you are not going to use tinkering, be sure to have scissors in " \
+      "your pack (for non-exceptional items when exceptional is required) and lots of sewing kits in " \
+      "there as well.  Material searches are set to a second level search."
+      
 if not FindAlias('tailor bod filler restock'):
+	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor bod filler restock')
-  	
+
+msg = "Finally, this last choice is a book for BODs that cannot be filled. " \
+	  "For instance, you may have run out of leather and " \
+	  "still have plenty of cloth in your restock chest. " \
+	  "The Macro could continue to complete the remaining cloth BODs, " \
+	  "but would stash all the incompletable leather BODs in this book."
+	  
+if not FindAlias('tailor uncompletable bod book'):
+	if UseHelp: ConfirmPrompt(msg)
+  	PromptAlias('tailor uncompletable bod book')
+
+msg = "You are all set! \nOne final note, if you prefer to not see these prompts " \
+	  "anymore, set the 'UseHelp' variable at the top of the macro to 'False'" \
+
+if UseHelp: ConfirmPrompt(msg)
+
 class CraftableItem:
 	def __init__(self, graphic, gumpResponse1, gumpResponse2):
 		self.graphic = graphic
@@ -129,8 +178,9 @@ BoneArmor 		= CraftableItem(0x144f, 64, 30)
 
 ClothItems 	 = ["skullcap", "bandana", "hat", "cap", "bonnet", "doublet", "shirt", "tunic", "surcoat", 
 			    "dress", "cloak", "robe", "jester", "pants", "kilt", "skirt", "apron", "sash"]
-LeatherItems = ["shoes", "sandals", "boots", "leather", "studded"]
-BoneItems 	 = ["Bone"]
+LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
+BoneItems 	 = ["bone"]
+LeatherTypes = ["spined", "horned", "barbed"]
 
 def RefillIngots():
 	container = GetAlias('tailor bod filler restock')
@@ -144,10 +194,13 @@ def RefillIngots():
 			Pause(1500)
 
 def RefillCloth():
-	pass
+	container = GetAlias('tailor bod filler restock')
 	
 
 def RefillLeather(leatherHue):
+	pass
+	
+def RefillBones():
 	pass
 	
 
@@ -155,10 +208,29 @@ def UnloadMaterials():
 	pass
 
 def CheckMaterials():
+	materialType = "cloth"
+	requiresBone = False
 	if not GumpExists(BODGump):
 		return
 	else:
-		pass
+		for text in LeatherItems:
+			if InGump(BODGump, text):
+				materialType = "leather"
+				if text == "bone":
+					requiresBone = True
+				for type in LeatherTypes:
+					if InGump(BODGump, type):
+						materialType = type
+
+	if materialType == "cloth":
+		RefillCloth()
+	else:
+		RefillLeather(materialType)
+		
+	if requiresBone:
+		RefillBones()
+							
+		
 		
 def CraftTinkerItem(item):
 	RestockIngots()
@@ -177,7 +249,7 @@ def GetScissors():
 	return GetAlias("found")
 
 
-def CraftSewingKits():
+def CraftKits():
 	if CountType(TinkerTool.graphic, "backpack") < 2:
 		while CountType(TinkerTool.graphic, "backpack") < 2:
 			CraftTinkerItem(TinkerTool)
@@ -189,7 +261,7 @@ def CheckForSewingKits():
 	if not FindType(SewingKit.graphic, 1, "backpack"):
 		container = GetAlias('tailor bod filler restock')
 		if not FindType(SewingKit.graphic, 2, container):
-			CraftSewingKits()
+			CraftKits()
 		else:
 			MoveType(SewingKit.graphic, container, "backpack")
 			Pause(1500)
@@ -229,7 +301,6 @@ def BookDeedsRemaining():
 	return remaining
 
 def ProcessBOD():
-	CheckMaterials()
 	kit = CheckForSewingKits()
 	UseObject(kit)
 	WaitForGump(tailorGump, 5000)
@@ -362,11 +433,14 @@ if FindType(BOD, 1, "backpack", TailorBODcolor):
 	currentBOD = GetAlias("found")
 	UseObject(currentBOD)
 	WaitForGump(BODGump, 5000)
-	# Select the combine option
+	
+	# Select the "combine" option
 	ReplyGump(BODGump, 2)
 	WaitForGump(BODGump, 5000)
 	WaitForTarget(5000)
 
+	CheckMaterials()
+	
 	while TargetExists():
 		ProcessBOD()
 
