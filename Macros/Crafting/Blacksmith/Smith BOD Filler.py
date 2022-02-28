@@ -1,7 +1,8 @@
-# Name: Durability check
-# Description: Smith BOD Filler
+# Name: Smith BOD Filler
+# Description: This will fill all BODs from a Source BOD Book. Set your filter on this book to pull only the BODs you want filled.
+#	       Currently, this macro only works for Iron Ingots.
 # Author: raveX
-# Era: AOS
+# Era: Any
 
 SetQuietMode(True)
 
@@ -120,8 +121,6 @@ MetalKiteShield 	= SmithItem(0x1b74, 15, 30)
 TearKiteShield 		= SmithItem(0x1b79, 15, 37)
 
 
-
-
 def RefillIngots():
 	container = GetAlias('smith bod filler restock')
 	if CountType(ingots, "backpack") < 20:
@@ -174,13 +173,13 @@ def CheckForTongs():
 		WaitForGump(smithGump, 5000)
 
 
-def CraftItem(itemGraphic, gumpResponse1, gumpResponse2):
-	ReplyGump(smithGump, gumpResponse1)
+def CraftItem(item):
+	ReplyGump(smithGump, item.gumpResponse1)
 	WaitForGump(smithGump, 5000)
-	ReplyGump(smithGump, gumpResponse2)
+	ReplyGump(smithGump, item.gumpResponse2)
 	WaitForGump(smithGump, 5000)
 	Pause(500)
-	while FindType(itemGraphic, 1, "backpack"):
+	while FindType(item.graphic, 1, "backpack"):
 		Target("found")
 		WaitForTarget(2000)
 		if not TargetExists() and InJournal("must be exceptional"):
