@@ -68,12 +68,21 @@ class CraftableItem:
 		self.graphic = graphic
 		self.gumpResponse1 = gumpResponse1
 		self.gumpResponse2 = gumpResponse2
+		
+class Material:
+	def __init__(self, graphic, name, hue, minPackAmt, restockAmt):
+		self.graphic = graphic
+		self.name = name
+		self.hue = hue
+		self.minPackAmt = minPackAmt
+		self.restockAmt = restockAmt
 
 
 # *****MISC******
 errorTextColor = 33
 craftBoneArmor = True
 craftStuddedArmor = True
+stopOnOutOfResource = True
 
 # *****GUMPS*****
 tailorGump 	= 0x38920abd
@@ -81,20 +90,36 @@ tinkerGump 	= 0x38920abd
 BODGump 	= 0x5afbd742
 BODBookGump = 0x54f555df
 
-# *****Materials******
-ingots = 0x1bf2
-ironIngotHue = 0
-cutCloth = 0x1766
-leather = 0x1081
-leatherHue 	= 0
-spinedHue 	= 2220
-hornedHue 	= 2117
-barbedHue 	= 2129
-
 # *****BOD*******
 BOD = 0x2258
-TailorBODcolor = 1155
+TailorBODhue = 1155
+currentBOD = 0
 
+# *************************
+# ******  MATERIALS  ******
+# *************************
+# FORMAT: Material(graphic, name, hue, minPackAmt, restockAmt)
+# *************************
+ingots 	= Material(0x1bf2, "INGOTS", 0, 2, 50)
+cloth 	= Material(0x1766, "CLOTH", -1, 20, 500)
+leather = Material(0x1081, "LEATHER", 0, 20, 500)
+spined 	= Material(0x1081, "SPINED LEATHER", 2220, 20, 500)
+horned 	= Material(0x1081, "HORNED LEATHER", 2117, 20, 500)
+barbed 	= Material(0x1081, "BARBED LEATHER", 2129, 20, 500)
+bone 	= Material(0xf7e,  "BONE", 0, 10, 200)
+
+LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
+LeatherTypes = ["spined", "horned", "barbed"]
+
+currentItemMaterials = []
+
+# *****TRACK MATERIALS******
+outOfCloth   = False
+outOfLeather = False
+outOfSpined  = False
+outOfHorned  = False
+outOfBarbed  = False
+outOfBone    = False
 
 
 # *************************
@@ -105,12 +130,12 @@ TailorBODcolor = 1155
 # record crafting each item, and replacing the values below.  The itemGraphics should
 # not need to change (unless you are on a very custom shard)
 # *************************
-# FORMAT: CraftableItem(itemGraphic, GumpResponse1, GumpResponse2)
+# FORMAT: CraftableItem(graphic, gumpResponse1, gumpResponse2)
 # *************************
 # *****Tools******
-SewingKit 	= CraftableItem(0xf9d,  15, 44)
-Scissors 	= CraftableItem(0xf9f,  15, 2)
-TinkerTool 	= CraftableItem(0x1eb8, 15, 23)
+SewingKit 		= CraftableItem(0xf9d,  15, 44)
+Scissors 		= CraftableItem(0xf9f,  15, 2)
+TinkerTool 		= CraftableItem(0x1eb8, 15, 23)
 # *****Hats*****
 Skullcap 		= CraftableItem(0x1544, 8, 2)
 Bandana 		= CraftableItem(0x1540, 8, 9)
@@ -125,29 +150,29 @@ FeatheredHat	= CraftableItem(0x171a, 8, 65)
 TricornHat 		= CraftableItem(0x171b, 8, 72)
 JesterHat 		= CraftableItem(0x171c, 8, 79)
 # *****Shirts and Pants*****
-Doublet 	= CraftableItem(0x1f7b, 15, 2)
-Shirt 		= CraftableItem(0x1517, 15, 9)
-FancyShirt 	= CraftableItem(0x1efd, 15, 16)
-Tunic 		= CraftableItem(0x1fa1, 15, 23)
-Surcoat 	= CraftableItem(0x1ffd, 15, 30)
-PlainDress 	= CraftableItem(0x1f01, 15, 37)
-FancyDress 	= CraftableItem(0x1f00, 15, 44)
-Cloak 		= CraftableItem(0x1515, 15, 51)
-Robe		= CraftableItem(0x1f03, 15, 58)
-JesterSuit 	= CraftableItem(0x1f9f, 15, 65)
-ShortPants 	= CraftableItem(0x152e, 15, 128)
-LongPants 	= CraftableItem(0x1539, 15, 135)
-Kilt 		= CraftableItem(0x1537, 15, 142)
-Skirt 		= CraftableItem(0x1516, 15, 149)
+Doublet 		= CraftableItem(0x1f7b, 15, 2)
+Shirt 			= CraftableItem(0x1517, 15, 9)
+FancyShirt 		= CraftableItem(0x1efd, 15, 16)
+Tunic 			= CraftableItem(0x1fa1, 15, 23)
+Surcoat 		= CraftableItem(0x1ffd, 15, 30)
+PlainDress 		= CraftableItem(0x1f01, 15, 37)
+FancyDress 		= CraftableItem(0x1f00, 15, 44)
+Cloak 			= CraftableItem(0x1515, 15, 51)
+Robe			= CraftableItem(0x1f03, 15, 58)
+JesterSuit 		= CraftableItem(0x1f9f, 15, 65)
+ShortPants 		= CraftableItem(0x152e, 15, 128)
+LongPants 		= CraftableItem(0x1539, 15, 135)
+Kilt 			= CraftableItem(0x1537, 15, 142)
+Skirt 			= CraftableItem(0x1516, 15, 149)
 # *****Miscellaneous*****
-BodySash 	= CraftableItem(0x1541, 22, 2)
-HalfApron 	= CraftableItem(0x153b, 22, 9)
-FullApron 	= CraftableItem(0x153d, 22, 16)
+BodySash 		= CraftableItem(0x1541, 22, 2)
+HalfApron 		= CraftableItem(0x153b, 22, 9)
+FullApron 		= CraftableItem(0x153d, 22, 16)
 # *****Footwear*****
-Sandals 	= CraftableItem(0x170d, 29, 30)
-Shoes 		= CraftableItem(0x170f, 29, 37)
-Boots 		= CraftableItem(0x170b, 29, 44)
-ThighBoots 	= CraftableItem(0x1711, 29, 51)
+Sandals 		= CraftableItem(0x170d, 29, 30)
+Shoes 			= CraftableItem(0x170f, 29, 37)
+Boots 			= CraftableItem(0x170b, 29, 44)
+ThighBoots 		= CraftableItem(0x1711, 29, 51)
 # *****Leather Armor*****
 LeatherGorget 	= CraftableItem(0x13c7, 36, 23)
 LeatherCap 		= CraftableItem(0x1db9, 36, 30)
@@ -176,33 +201,37 @@ BoneLeggings 	= CraftableItem(0x1452, 64, 23)
 BoneArmor 		= CraftableItem(0x144f, 64, 30)
 
 
-LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
-LeatherTypes = ["spined", "horned", "barbed"]
+# *************************
+# ******  FUNCTIONS  ******
+# *************************
 
-def RefillIngots():
+def RefillMaterial(type):
 	container = GetAlias('tailor bod filler restock')
-	if CountType(ingots, "backpack") < 2:
-		if CountType(ingots, container) == 0:
-			SysMessage("OUT OF INGOTS!", errorTextColor)
-			CancelTarget()
-			Stop()
+	if CountType(type.graphic, "backpack") < type.minPackAmt:
+		if CountType(type.graphic, container) == 0:
+			msg = "OUT OF " + name + "!"
+			SysMessage(msg, errorTextColor)
+			if stopOnOutOfResource:
+				CancelTarget()
+				Stop()
+			else:
+				if type == cloth: outOfCloth = True
+				elif type == leather: outOfLeather = True
+				elif type == spined: outOfSpined = True
+				elif type == horned: outOfHorned = True
+				elif type == barbed: outOfBarbed = True
+				elif type == bone: outOfBone = True
 		else:
-			MoveType(ingots, container, "backpack", -1, -1, -1, ironIngotHue, 50)
+			MoveType(type.graphic, container, "backpack", -1, -1, -1, hue, type.restockAmt)
 			Pause(1500)
 
-def RefillCloth():
-	container = GetAlias('tailor bod filler restock')
-	
-
-def RefillLeather(leatherHue):
-	pass
-	
-def RefillBones():
-	pass
-	
 
 def UnloadMaterials():
-	pass
+	materials = [ingots, cloth, leather, spined, horned, barbed, bone]
+	container = GetAlias('tailor bod filler restock')
+	for x in materials:
+		MoveType(x.graphic, "backpack", container, -1, -1, -1)
+
 
 def CheckMaterials():
 	materialType = "cloth"
@@ -219,13 +248,13 @@ def CheckMaterials():
 					if InGump(BODGump, type):
 						materialType = type
 
-	if materialType == "cloth":
-		RefillCloth()
-	else:
-		RefillLeather(materialType)
+	if materialType == "cloth": RefillMaterial(cloth)
+	elif materialType == "leather": RefillMaterial(leather)
+	elif materialType == "spined": RefillMaterial(spined)
+	elif materialType == "horned": RefillMaterial(horned)
+	elif materialType == "barbed": RefillMaterial(barbed)
 		
-	if requiresBone:
-		RefillBones()
+	if requiresBone: RefillMaterial(bone)
 							
 		
 		
@@ -426,7 +455,7 @@ def ProcessBOD():
 # ******************************
 
 # Search for BOD to Fill
-if FindType(BOD, 1, "backpack", TailorBODcolor):
+if FindType(BOD, 1, "backpack", TailorBODhue):
 	currentBOD = GetAlias("found")
 	UseObject(currentBOD)
 	WaitForGump(BODGump, 5000)
