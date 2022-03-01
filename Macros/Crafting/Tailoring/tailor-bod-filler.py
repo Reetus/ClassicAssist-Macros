@@ -44,9 +44,9 @@ msg = "Next, you need to select a container that will serve as your restock " \
       "your pack (for non-exceptional items when exceptional is required) and lots of sewing kits in " \
       "there as well.  Material searches are set to a second level search."
       
-if not FindAlias('tailor bod filler restock'):
+if not FindAlias('tailor restock container'):
 	if UseHelp: ConfirmPrompt(msg)
-  	PromptAlias('tailor bod filler restock')
+  	PromptAlias('tailor restock container')
 
 msg = "Finally, this last choice is a book for BODs that cannot be filled. " \
 	  "For instance, you may have run out of leather and " \
@@ -205,8 +205,21 @@ BoneArmor 		= CraftableItem(0x144f, 64, 30)
 # ******  FUNCTIONS  ******
 # *************************
 
+def GetRestockContainer():
+	container = GetAlias('tailor restock container')
+	if container == 0:
+		SysMessage("Looking for 'tailor restock container' alias and not found", errorTextColor)
+		CancelTarget()
+		Stop()
+	elif not InRange(container, 2):
+		SysMessage("Restock container is no longer in range", errorTextColor)
+		CancelTarget()
+		Stop()
+	else: return container
+
+
 def RefillMaterial(type):
-	container = GetAlias('tailor bod filler restock')
+	container = GetRestockContainer()
 	if CountType(type.graphic, "backpack") < type.minPackAmt:
 		if CountType(type.graphic, container) == 0:
 			msg = "OUT OF " + name + "!"
@@ -222,13 +235,13 @@ def RefillMaterial(type):
 				elif type == barbed: outOfBarbed = True
 				elif type == bone: outOfBone = True
 		else:
-			MoveType(type.graphic, container, "backpack", -1, -1, -1, hue, type.restockAmt)
+			MoveType(type.graphic, container, "backpack", -1, -1, -1, type.hue, type.restockAmt)
 			Pause(1500)
 
 
 def UnloadMaterials():
 	materials = [ingots, cloth, leather, spined, horned, barbed, bone]
-	container = GetAlias('tailor bod filler restock')
+	container = GetRestockContainer()
 	for x in materials:
 		MoveType(x.graphic, "backpack", container, -1, -1, -1)
 
@@ -236,9 +249,12 @@ def UnloadMaterials():
 def CheckMaterials():
 	materialType = "cloth"
 	requiresBone = False
-	if not GumpExists(BODGump):
+	if currentBOD == 0:
+		SysMessage("Looking for required BOD material but no current BOD", errorTextColor)
 		return
 	else:
+		UseObject(currentBOD)
+		WaitForGump(BODGump, 5000)
 		for text in LeatherItems:
 			if InGump(BODGump, text):
 				materialType = "leather"
@@ -285,7 +301,7 @@ def CraftKits():
 
 def CheckForSewingKits():
 	if not FindType(SewingKit.graphic, 1, "backpack"):
-		container = GetAlias('tailor bod filler restock')
+		container = GetRestockContainer()
 		if not FindType(SewingKit.graphic, 2, container):
 			CraftKits()
 		else:
@@ -323,131 +339,91 @@ def CraftTailorItem(item):
 
 def BookDeedsRemaining():
 	bodBook = GetAlias("smith bod source")
-	remaining = PropertyValue[int](bodBook, "Deeds in Book:")
-	return remaining
+	
+	if not bodBook == 0:
+		remaining = PropertyValue[int](bodBook, "Deeds in Book:")
+		return remaining
+	else:
+		SysMessage("Did not find the 'smith bod source' alias", errorTextColor)
+		return 0
 
-def ProcessBOD():
-	kit = CheckForSewingKits()
-	UseObject(kit)
-	WaitForGump(tailorGump, 5000)
+
+def GetBODItem():
+
+	if not GumpExists(BODGump) and currentBOD == 0:
+		SysMessage("Looking for BOD Gump and not found", errorTextColor)
+		return 0
+	else:
+		UseObject(currentBOD)
+		WaitForGump(BODGump, 5000)
+	
 	# ********** Hats **********
-	if InGump(BODGump, "skullcap"):
-		CraftTailorItem(Skullcap)
-	elif InGump(BODGump, "bandana"):
-		CraftTailorItem(Bandana)
-	elif InGump(BODGump, "floppy hat"):
-		CraftTailorItem(FloppyHat)
-	elif InGump(BODGump, "cap"):
-		CraftTailorItem(Cap)
-	elif InGump(BODGump, "wide-brim hat"):
-		CraftTailorItem(WideBrimHat)
-	elif InGump(BODGump, "tall straw hat"):
-		CraftTailorItem(TallStrawHat)
-	elif InGump(BODGump, "straw hat"):
-		CraftTailorItem(StrawHat)
-	elif InGump(BODGump, "wizard's hat"):
-		CraftTailorItem(WizardHat)
-	elif InGump(BODGump, "bonnet"):
-		CraftTailorItem(Bonnet)
-	elif InGump(BODGump, "feathered hat"):
-		CraftTailorItem(FeatheredHat)
-	elif InGump(BODGump, "tricorne hat"):
-		CraftTailorItem(TricornHat)
-	elif InGump(BODGump, "jester hat"):
-		CraftTailorItem(JesterHat)
+	if InGump(BODGump, "skullcap"): return Skullcap
+	elif InGump(BODGump, "bandana"): return Bandana
+	elif InGump(BODGump, "floppy hat"): return FloppyHat
+	elif InGump(BODGump, "cap"): return Cap
+	elif InGump(BODGump, "wide-brim hat"): return WideBrimHat
+	elif InGump(BODGump, "tall straw hat"): return TallStrawHat
+	elif InGump(BODGump, "straw hat"): return StrawHat
+	elif InGump(BODGump, "wizard's hat"): return WizardHat
+	elif InGump(BODGump, "bonnet"): return Bonnet
+	elif InGump(BODGump, "feathered hat"): return FeatheredHat
+	elif InGump(BODGump, "tricorne hat"): return TricornHat
+	elif InGump(BODGump, "jester hat"): return JesterHat
 	# ********** Shirts and Pants **********
-	elif InGump(BODGump, "doublet"):
-		CraftTailorItem(Doublet)
-	elif InGump(BODGump, "fancy shirt"):
-		CraftTailorItem(FancyShirt)
-	elif InGump(BODGump, "shirt"):
-		CraftTailorItem(Shirt)
-	elif InGump(BODGump, "tunic"):
-		CraftTailorItem(Tunic)		
-	elif InGump(BODGump, "surcoat"):
-		CraftTailorItem(Surcoat)
-	elif InGump(BODGump, "plain dress"):
-		CraftTailorItem(PlainDress)
-	elif InGump(BODGump, "fancy dress"):
-		CraftTailorItem(FancyDress)
-	elif InGump(BODGump, "cloak"):
-		CraftTailorItem(Cloak)
-	elif InGump(BODGump, "robe"):
-		CraftTailorItem(Robe)
-	elif InGump(BODGump, "jester suit"):
-		CraftTailorItem(JesterSuit)
-	elif InGump(BODGump, "short pants"):
-		CraftTailorItem(ShortPants)		
-	elif InGump(BODGump, "long pants"):
-		CraftTailorItem(LongPants)
-	elif InGump(BODGump, "kilt"):
-		CraftTailorItem(Kilt)
-	elif InGump(BODGump, "skirt"):
-		CraftTailorItem(Skirt)
+	elif InGump(BODGump, "doublet"): return Doublet
+	elif InGump(BODGump, "fancy shirt"): return FancyShirt
+	elif InGump(BODGump, "shirt"): return Shirt
+	elif InGump(BODGump, "tunic"): return Tunic	
+	elif InGump(BODGump, "surcoat"): return Surcoat
+	elif InGump(BODGump, "plain dress"): return PlainDress
+	elif InGump(BODGump, "fancy dress"): return FancyDress
+	elif InGump(BODGump, "cloak"): return Cloak
+	elif InGump(BODGump, "robe"): return Robe
+	elif InGump(BODGump, "jester suit"): return JesterSuit
+	elif InGump(BODGump, "short pants"): return ShortPants
+	elif InGump(BODGump, "long pants"): return LongPants
+	elif InGump(BODGump, "kilt"): return Kilt
+	elif InGump(BODGump, "skirt"): return Skirt
 	# ********** MISCELLANEOUS **********
-	elif InGump(BODGump, "body sash"):
-		CraftTailorItem(BodySash)
-	elif InGump(BODGump, "half apron"):
-		CraftTailorItem(HalfApron)
-	elif InGump(BODGump, "full apron"):
-		CraftTailorItem(FullApron)
+	elif InGump(BODGump, "body sash"): return BodySash
+	elif InGump(BODGump, "half apron"): return HalfApron
+	elif InGump(BODGump, "full apron"): return FullApron
 	# ********** FOOTWEAR **********
-	elif InGump(BODGump, "thigh boots"):
-		CraftTailorItem(ThighBoots)
-	elif InGump(BODGump, "sandals"):
-		CraftTailorItem(Sandals)
-	elif InGump(BODGump, "shoes"):
-		CraftTailorItem(Shoes)
-	elif InGump(BODGump, "boots"):
-		CraftTailorItem(Boots)
+	elif InGump(BODGump, "thigh boots"): return ThighBoots
+	elif InGump(BODGump, "sandals"): return Sandals
+	elif InGump(BODGump, "shoes"): return Shoes
+	elif InGump(BODGump, "boots"): return Boots
 	# ********** LEATHER ARMOR **********
-	elif InGump(BODGump, "leather gorget"):
-		CraftTailorItem(LeatherGorget)
-	elif InGump(BODGump, "leather cap"):
-		CraftTailorItem(LeatherCap)	
-	elif InGump(BODGump, "leather gloves"):
-		CraftTailorItem(LeatherGloves)
-	elif InGump(BODGump, "leather leggings"):
-		CraftTailorItem(LeatherLeggings)
-	elif InGump(BODGump, "leather sleeves"):
-		CraftTailorItem(LeatherSleeves)
-	elif InGump(BODGump, "leather tunic"):
-		CraftTailorItem(LeatherTunic)
+	elif InGump(BODGump, "leather gorget"): return LeatherGorget
+	elif InGump(BODGump, "leather cap"): return LeatherCap
+	elif InGump(BODGump, "leather gloves"): return LeatherGloves
+	elif InGump(BODGump, "leather leggings"): return LeatherLeggings
+	elif InGump(BODGump, "leather sleeves"): return LeatherSleeves
+	elif InGump(BODGump, "leather tunic"): return LeatherTunic
 	# ********** STUDDED ARMOR **********
-	elif InGump(BODGump, "studded gorget"):
-		CraftTailorItem(StuddedGorget)	
-	elif InGump(BODGump, "studded gloves"):
-		CraftTailorItem(StuddedGloves)
-	elif InGump(BODGump, "studded leggings"):
-		CraftTailorItem(StuddedLeggings)
-	elif InGump(BODGump, "studded sleeves"):
-		CraftTailorItem(StuddedSleeves)
-	elif InGump(BODGump, "studded tunic"):
-		CraftTailorItem(StuddedTunic)
+	elif InGump(BODGump, "studded gorget"): return StuddedGorget
+	elif InGump(BODGump, "studded gloves"): return StuddedGloves
+	elif InGump(BODGump, "studded leggings"): return StuddedLeggings
+	elif InGump(BODGump, "studded sleeves"): return StuddedSleeves
+	elif InGump(BODGump, "studded tunic"): return StuddedTunic
 	# ********** FEMALE ARMOR **********
-	elif InGump(BODGump, "leather shorts"):
-		CraftTailorItem(LeatherShorts)
-	elif InGump(BODGump, "leather skirt"):
-		CraftTailorItem(LeatherSkirt)
-	elif InGump(BODGump, "leather bustier"):
-		CraftTailorItem(LeatherBustier)
-	elif InGump(BODGump, "studded bustier"):
-		CraftTailorItem(StuddedBustier)
-	elif InGump(BODGump, "female leather armor"):
-		CraftTailorItem(FemaleLeatherArmor)
-	elif InGump(BODGump, "studded armorr"):
-		CraftTailorItem(StuddedArmor)
+	elif InGump(BODGump, "leather shorts"): return LeatherShorts
+	elif InGump(BODGump, "leather skirt"): return LeatherSkirt
+	elif InGump(BODGump, "leather bustier"): return LeatherBustier
+	elif InGump(BODGump, "studded bustier"): return StuddedBustier
+	elif InGump(BODGump, "female leather armor"): return FemaleLeatherArmor
+	elif InGump(BODGump, "studded armorr"): return StuddedArmor
 	# ********** BONE ARMOR **********
-	elif InGump(BODGump, "bone helmet"):
-		CraftTailorItem(BoneHelmet)	
-	elif InGump(BODGump, "bone gloves"):
-		CraftTailorItem(BoneGloves)
-	elif InGump(BODGump, "bone leggings"):
-		CraftTailorItem(BoneLeggings)
-	elif InGump(BODGump, "bone arms"):
-		CraftTailorItem(BoneArms)
-	elif InGump(BODGump, "bone armor"):
-		CraftTailorItem(BoneArmor)
+	elif InGump(BODGump, "bone helmet"): return BoneHelmet
+	elif InGump(BODGump, "bone gloves"): return BoneGloves
+	elif InGump(BODGump, "bone leggings"): return BoneLeggings
+	elif InGump(BODGump, "bone arms"): return BoneArms
+	elif InGump(BODGump, "bone armor"): return BoneArmor
+	else:
+		SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
+		return 0
+
 
 
 # ******************************
@@ -466,14 +442,19 @@ if FindType(BOD, 1, "backpack", TailorBODhue):
 	WaitForTarget(5000)
 
 	CheckMaterials()
+	item = GetBODItem()
 	
-	while TargetExists():
-		ProcessBOD()
+	while TargetExists() and item != 0:
+		kit = CheckForSewingKits()
+		UseObject(kit)
+		WaitForGump(tailorGump, 5000)
+		CraftTailorItem(item)
 
 	# BOD is complete, move to destination book
 	if not TargetExists():
 		destination = GetAlias('tailor bod destination')
 		MoveItem(currentBOD, destination)
+		currentBOD = 0
 		Pause(1500)
 
 # Get A BOD out of the book
