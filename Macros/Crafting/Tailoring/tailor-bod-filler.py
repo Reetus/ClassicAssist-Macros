@@ -176,10 +176,7 @@ BoneLeggings 	= CraftableItem(0x1452, 64, 23)
 BoneArmor 		= CraftableItem(0x144f, 64, 30)
 
 
-ClothItems 	 = ["skullcap", "bandana", "hat", "cap", "bonnet", "doublet", "shirt", "tunic", "surcoat", 
-			    "dress", "cloak", "robe", "jester", "pants", "kilt", "skirt", "apron", "sash"]
 LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
-BoneItems 	 = ["bone"]
 LeatherTypes = ["spined", "horned", "barbed"]
 
 def RefillIngots():
