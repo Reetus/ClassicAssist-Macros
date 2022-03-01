@@ -58,6 +58,12 @@ if not FindAlias('tailor uncompletable bod book'):
 	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor uncompletable bod book')
 
+msg = "Trash container for failed Bone armor attempts as they cannot be recycled"
+
+if not FindAlias('TrashForBone'):
+	if UseHelp: ConfirmPrompt(msg)
+  	PromptAlias('TrashForBone')
+
 msg = "You are all set! \nOne final note, if you prefer to not see these prompts " \
 	  "anymore, set the 'UseHelp' variable at the top of the macro to 'False'" \
 
@@ -68,6 +74,7 @@ class CraftableItem:
 		self.graphic = graphic
 		self.gumpResponse1 = gumpResponse1
 		self.gumpResponse2 = gumpResponse2
+		self.defaultHue = 0
 		
 class Material:
 	def __init__(self, graphic, name, hue, minPackAmt, restockAmt):
@@ -79,6 +86,7 @@ class Material:
 
 
 # *****MISC******
+textColor = 43
 errorTextColor = 33
 craftBoneArmor = True
 craftStuddedArmor = True
@@ -89,6 +97,7 @@ tailorGump 	= 0x38920abd
 tinkerGump 	= 0x38920abd
 BODGump 	= 0x5afbd742
 BODBookGump = 0x54f555df
+BODGumpCombineResponse = 2
 
 # *****BOD*******
 BOD = 0x2258
@@ -275,13 +284,15 @@ def CheckMaterials():
 		
 		
 def CraftTinkerItem(item):
-	RestockIngots()
+	RefillMaterial(ingots)
+	if CountType(TinkerTool.graphic, 1, "backpack") < 2:
+		CraftTinkerItem(TinkerTool)	
 	UseType(TinkerTool.graphic)
 	WaitForGump(tinkerGump, 5000)
 	ReplyGump(tinkerGump, item.gumpResponse1)
 	WaitForGump(tinkerGump, 5000)
 	ReplyGump(tinkerGump, item.gumpResponse2)
-	Pause(1500)	
+	Pause(1500)		
 
 
 def GetScissors():
@@ -291,24 +302,15 @@ def GetScissors():
 	return GetAlias("found")
 
 
-def CraftKits():
-	if CountType(TinkerTool.graphic, "backpack") < 2:
-		while CountType(TinkerTool.graphic, "backpack") < 2:
-			CraftTinkerItem(TinkerTool)
-	while CountType(SewingKit.graphic, "backpack") < 5:
-		CraftTinkerItem(SewingKit)
-
-
-def CheckForSewingKits():
-	if not FindType(SewingKit.graphic, 1, "backpack"):
+def GetSewingKit():
+	while not FindType(SewingKit.graphic, 1, "backpack", SewingKit.defaultHue):
 		container = GetRestockContainer()
-		if not FindType(SewingKit.graphic, 2, container):
-			CraftKits()
+		if not FindType(SewingKit.graphic, 2, container, SewingKit.defaultHue):
+			CraftTinkerItem(SewingKit)
 		else:
-			MoveType(SewingKit.graphic, container, "backpack")
+			MoveType(SewingKit.graphic, container, "backpack", -1, -1, -1, SewingKit.defaultHue)
 			Pause(1500)
-
-	if FindType(SewingKit.graphic, 1, "backpack"):		
+	if FindType(SewingKit.graphic, 1, "backpack", SewingKit.defaultHue):		
 		return GetAlias("found")
 	else:
 		SysMessage("ERROR GETTING SEWING KIT", errorTextColor)
@@ -316,22 +318,32 @@ def CheckForSewingKits():
 
 
 def CraftTailorItem(item):
+	kit = GetSewingKit()
+	UseObject(kit)
+	WaitForGump(tailorGump, 5000)
 	ReplyGump(tailorGump, item.gumpResponse1)
 	WaitForGump(tailorGump, 5000)
 	ReplyGump(tailorGump, item.gumpResponse2)
 	WaitForGump(tailorGump, 5000)
 	Pause(500)
 	while FindType(item.graphic, 1, "backpack"):
-		item = GetAlias("found")
-		Target(item)
+		craftedItem = GetAlias("found")
+		Target(craftedItem)
 		WaitForTarget(2000)
 		if not TargetExists() and InJournal("must be exceptional"):
 			myScissors = GetScissors()
+			Pause(500)
 			UseObject(myScissors)
 			WaitForTarget(5000)
-			Target(item)
+			Target(craftedItem)
+			Pause(300)
+			if InJournal("Scissors cannot be used"):
+				Pause(500)
+				MoveItem(craftedItem, GetAlias("TrashForBone"))
+				ClearJournal()
 			# Bring back the target cursor
-			ReplyGump(BODGump, 2)
+			Pause(500)
+			ReplyGump(BODGump, BODGumpCombineResponse)
 			WaitForGump(BODGump, 5000)
 			WaitForTarget(5000)
 			ClearJournal()
@@ -352,7 +364,7 @@ def GetBODItem():
 
 	if not GumpExists(BODGump) and currentBOD == 0:
 		SysMessage("Looking for BOD Gump and not found", errorTextColor)
-		return 0
+		return None
 	else:
 		UseObject(currentBOD)
 		WaitForGump(BODGump, 5000)
@@ -373,8 +385,7 @@ def GetBODItem():
 	# ********** Shirts and Pants **********
 	elif InGump(BODGump, "doublet"): return Doublet
 	elif InGump(BODGump, "fancy shirt"): return FancyShirt
-	elif InGump(BODGump, "shirt"): return Shirt
-	elif InGump(BODGump, "tunic"): return Tunic	
+	elif InGump(BODGump, "shirt"): return Shirt		
 	elif InGump(BODGump, "surcoat"): return Surcoat
 	elif InGump(BODGump, "plain dress"): return PlainDress
 	elif InGump(BODGump, "fancy dress"): return FancyDress
@@ -383,8 +394,7 @@ def GetBODItem():
 	elif InGump(BODGump, "jester suit"): return JesterSuit
 	elif InGump(BODGump, "short pants"): return ShortPants
 	elif InGump(BODGump, "long pants"): return LongPants
-	elif InGump(BODGump, "kilt"): return Kilt
-	elif InGump(BODGump, "skirt"): return Skirt
+	elif InGump(BODGump, "kilt"): return Kilt	
 	# ********** MISCELLANEOUS **********
 	elif InGump(BODGump, "body sash"): return BodySash
 	elif InGump(BODGump, "half apron"): return HalfApron
@@ -413,60 +423,71 @@ def GetBODItem():
 	elif InGump(BODGump, "leather bustier"): return LeatherBustier
 	elif InGump(BODGump, "studded bustier"): return StuddedBustier
 	elif InGump(BODGump, "female leather armor"): return FemaleLeatherArmor
-	elif InGump(BODGump, "studded armorr"): return StuddedArmor
+	elif InGump(BODGump, "studded armor"): return StuddedArmor
 	# ********** BONE ARMOR **********
 	elif InGump(BODGump, "bone helmet"): return BoneHelmet
 	elif InGump(BODGump, "bone gloves"): return BoneGloves
 	elif InGump(BODGump, "bone leggings"): return BoneLeggings
 	elif InGump(BODGump, "bone arms"): return BoneArms
 	elif InGump(BODGump, "bone armor"): return BoneArmor
+	# ********** NEED THESE AT END ***********
+	elif InGump(BODGump, "skirt"): return Skirt
+	elif InGump(BODGump, "tunic"): return Tunic
 	else:
 		SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
-		return 0
+		return None
 
 
 
 # ******************************
 # *****      MAIN          *****
 # ******************************
-
-# Search for BOD to Fill
-if FindType(BOD, 1, "backpack", TailorBODhue):
-	currentBOD = GetAlias("found")
-	UseObject(currentBOD)
-	WaitForGump(BODGump, 5000)
-	
-	# Select the "combine" option
-	ReplyGump(BODGump, 2)
-	WaitForGump(BODGump, 5000)
-	WaitForTarget(5000)
-
-	CheckMaterials()
-	item = GetBODItem()
-	
-	while TargetExists() and item != 0:
-		kit = CheckForSewingKits()
-		UseObject(kit)
-		WaitForGump(tailorGump, 5000)
-		CraftTailorItem(item)
-
-	# BOD is complete, move to destination book
-	if not TargetExists():
-		destination = GetAlias('tailor bod destination')
-		MoveItem(currentBOD, destination)
-		currentBOD = 0
-		Pause(1500)
-
-# Get A BOD out of the book
-elif not BookDeedsRemaining() == 0:
-	bodBook = GetAlias("tailor bod source")
-	UseObject(bodBook)
-	WaitForGump(BODBookGump, 5000)
-	ReplyGump(BODBookGump, 5)
-	Pause(1500)
-
-# All BODs filled / BOD book is empty
-else:
-	SysMessage("UNABLE TO FIND BODS TO FILL", errorTextColor)
+def Main():
+	while BookDeedsRemaining() > 0:
+		# Search for BOD to Fill
+		if FindType(BOD, 1, "backpack", TailorBODhue):
+			global currentBOD
+			currentBOD = GetAlias("found")
+			UseObject(currentBOD)
+			WaitForGump(BODGump, 5000)
+			Pause(500)
+			
+			# Select the "combine" option
+			ReplyGump(BODGump, BODGumpCombineResponse)
+			WaitForGump(BODGump, 5000)
+			WaitForTarget(5000)
+			Pause(600)
+			
+			CheckMaterials()
+			Pause(600)
+			
+			item = GetBODItem()
+			
+			while TargetExists() and item != None:		
+				CraftTailorItem(item)
+		
+			# BOD is complete, move to destination book
+			if not TargetExists():
+				destination = GetAlias('tailor bod destination')
+				MoveItem(currentBOD, destination)
+				currentBOD = 0
+				Pause(1500)
+		
+		# Get A BOD out of the book
+		else:
+			bodBook = GetAlias("tailor bod source")
+			UseObject(bodBook)
+			WaitForGump(BODBookGump, 5000)
+			ReplyGump(BODBookGump, 5)
+			Pause(1500)
+		
+	UnloadMaterials()
+	SysMessage("NO BODS TO FILL", textColor)
 	CancelTarget()
 	Stop()
+	
+	
+# ******************************
+# *****      BODY          *****
+# ******************************
+Main()
