@@ -314,7 +314,7 @@ def CheckMaterials():
 					if InGump(BODGump, type):
 						materialType = type
 
-	print("Material type is: " + materialType)
+	SysMessage("[debug]:Material type is: " + materialType, debugTextColor)
 	if materialType == "cloth": RefillMaterial(cloth)
 	elif materialType == "leather": RefillMaterial(leather)
 	elif materialType == "spined": RefillMaterial(spined)
@@ -428,7 +428,6 @@ def GetBODItem():
 	if InGump(BODGump, "skullcap"): return Skullcap
 	elif InGump(BODGump, "bandana"): return Bandana
 	elif InGump(BODGump, "floppy hat"): return FloppyHat
-	elif InGump(BODGump, "cap"): return Cap
 	elif InGump(BODGump, "wide-brim hat"): return WideBrimHat
 	elif InGump(BODGump, "tall straw hat"): return TallStrawHat
 	elif InGump(BODGump, "straw hat"): return StrawHat
@@ -488,6 +487,7 @@ def GetBODItem():
 	# ********** NEED THESE AT END ***********
 	elif InGump(BODGump, "skirt"): return Skirt
 	elif InGump(BODGump, "tunic"): return Tunic
+	elif InGump(BODGump, "cap"): return Cap
 	else:
 		SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
 		return None
@@ -534,6 +534,7 @@ def Main():
 		
 		# Get A BOD out of the book
 		else:
+			CloseGump(BODGump)
 			bodBook = GetAlias("tailor bod source")
 			UseObject(bodBook)
 			WaitForGump(BODBookGump, 5000)
