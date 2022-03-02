@@ -12,6 +12,17 @@ UseHelp = True
 debug = True
 # ****************************************
 # ****************************************
+#                  GLOBALS                
+# ****************************************
+currentBOD 	 = None
+craftBoneArmor 	  = True
+craftStuddedArmor = True
+outOfCloth   = False
+outOfLeather = False
+outOfSpined  = False
+outOfHorned  = False
+outOfBarbed  = False
+outOfBone    = False
 
 
 msg = "Welcome to the Tailor BOD Filler macro.  This macro " \
@@ -85,21 +96,152 @@ class Material:
 		self.minPackAmt = minPackAmt
 		self.restockAmt = restockAmt
 
+class BOD:
+	Gump = 0x5afbd742
+	GumpCombineResponse = 2
+	LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
+	LeatherTypes = ["spined", "horned", "barbed"]
+
+	def __init__(self, id, name):
+		self.id = id
+		self.name = name
+		self.item = self.GetItem()
+		self.amount = self.GetAmount()
+		self.completed = self.GetCompleted()
+		self.material = self.GetMaterial()
+		self.isBone = self.CheckIfBone()
+		self.isCompletable = self.CheckIfCompletable()
+
+
+	def GetItem(self):
+		if debug: SysMessage("[debug]:In BOD.GetItem", debugTextColor)
+		UseObject(self.id)
+		WaitForGump(BOD.Gump, 5000)
+		if not GumpExists(BOD.Gump)
+			SysMessage("Looking for BOD Gump and not found", errorTextColor)
+			return None
+	
+		# ********** Hats **********
+		if InGump(BOD.Gump, "skullcap"): return Skullcap
+		elif InGump(BOD.Gump, "bandana"): return Bandana
+		elif InGump(BOD.Gump, "floppy hat"): return FloppyHat
+		elif InGump(BOD.Gump, "wide-brim hat"): return WideBrimHat
+		elif InGump(BOD.Gump, "tall straw hat"): return TallStrawHat
+		elif InGump(BOD.Gump, "straw hat"): return StrawHat
+		elif InGump(BOD.Gump, "wizard's hat"): return WizardHat
+		elif InGump(BOD.Gump, "bonnet"): return Bonnet
+		elif InGump(BOD.Gump, "feathered hat"): return FeatheredHat
+		elif InGump(BOD.Gump, "tricorne hat"): return TricornHat
+		elif InGump(BOD.Gump, "jester hat"): return JesterHat
+		# ********** Shirts and Pants **********
+		elif InGump(BOD.Gump, "doublet"): return Doublet
+		elif InGump(BOD.Gump, "fancy shirt"): return FancyShirt
+		elif InGump(BOD.Gump, "shirt"): return Shirt		
+		elif InGump(BOD.Gump, "surcoat"): return Surcoat
+		elif InGump(BOD.Gump, "plain dress"): return PlainDress
+		elif InGump(BOD.Gump, "fancy dress"): return FancyDress
+		elif InGump(BOD.Gump, "cloak"): return Cloak
+		elif InGump(BOD.Gump, "robe"): return Robe
+		elif InGump(BOD.Gump, "jester suit"): return JesterSuit
+		elif InGump(BOD.Gump, "short pants"): return ShortPants
+		elif InGump(BOD.Gump, "long pants"): return LongPants
+		elif InGump(BOD.Gump, "kilt"): return Kilt	
+		# ********** MISCELLANEOUS **********
+		elif InGump(BOD.Gump, "body sash"): return BodySash
+		elif InGump(BOD.Gump, "half apron"): return HalfApron
+		elif InGump(BOD.Gump, "full apron"): return FullApron
+		# ********** FOOTWEAR **********
+		elif InGump(BOD.Gump, "thigh boots"): return ThighBoots
+		elif InGump(BOD.Gump, "sandals"): return Sandals
+		elif InGump(BOD.Gump, "shoes"): return Shoes
+		elif InGump(BOD.Gump, "boots"): return Boots
+		# ********** LEATHER ARMOR **********
+		elif InGump(BOD.Gump, "leather gorget"): return LeatherGorget
+		elif InGump(BOD.Gump, "leather cap"): return LeatherCap
+		elif InGump(BOD.Gump, "leather gloves"): return LeatherGloves
+		elif InGump(BOD.Gump, "leather leggings"): return LeatherLeggings
+		elif InGump(BOD.Gump, "leather sleeves"): return LeatherSleeves
+		elif InGump(BOD.Gump, "leather tunic"): return LeatherTunic
+		# ********** STUDDED ARMOR **********
+		elif InGump(BOD.Gump, "studded gorget"): return StuddedGorget
+		elif InGump(BOD.Gump, "studded gloves"): return StuddedGloves
+		elif InGump(BOD.Gump, "studded leggings"): return StuddedLeggings
+		elif InGump(BOD.Gump, "studded sleeves"): return StuddedSleeves
+		elif InGump(BOD.Gump, "studded tunic"): return StuddedTunic
+		# ********** FEMALE ARMOR **********
+		elif InGump(BOD.Gump, "leather shorts"): return LeatherShorts
+		elif InGump(BOD.Gump, "leather skirt"): return LeatherSkirt
+		elif InGump(BOD.Gump, "leather bustier"): return LeatherBustier
+		elif InGump(BOD.Gump, "studded bustier"): return StuddedBustier
+		elif InGump(BOD.Gump, "female leather armor"): return FemaleLeatherArmor
+		elif InGump(BOD.Gump, "studded armor"): return StuddedArmor
+		# ********** BONE ARMOR **********
+		elif InGump(BOD.Gump, "bone helmet"): return BoneHelmet
+		elif InGump(BOD.Gump, "bone gloves"): return BoneGloves
+		elif InGump(BOD.Gump, "bone leggings"): return BoneLeggings
+		elif InGump(BOD.Gump, "bone arms"): return BoneArms
+		elif InGump(BOD.Gump, "bone armor"): return BoneArmor
+		# ********** NEED THESE AT END ***********
+		elif InGump(BOD.Gump, "skirt"): return Skirt
+		elif InGump(BOD.Gump, "tunic"): return Tunic
+		elif InGump(BOD.Gump, "cap"): return Cap
+		else:
+			SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
+			return None
+
+	def GetMaterial(self):
+		if debug: SysMessage("[debug]:In BOD.GetMaterials", debugTextColor)
+		materialType = "cloth"
+		UseObject(self.id)
+		WaitForGump(BOD.Gump, 5000)
+		if not GumpExists(BOD.Gump)
+			SysMessage("Looking for BOD Gump and not found", errorTextColor)
+			return None
+
+		for text in LeatherItems:
+			if InGump(BOD.Gump, text):
+				materialType = "leather"
+				for type in LeatherTypes:
+					if InGump(BOD.Gump, type):
+						materialType = type
+
+		SysMessage("[debug]:Material type is: " + materialType, debugTextColor)
+		return materialType
+
+	def CheckIfBone(self):
+		if debug: SysMessage("[debug]:In BOD.CheckIfBone", debugTextColor)
+		
+		UseObject(self.id)
+		WaitForGump(BOD.Gump, 5000)
+		if not GumpExists(BOD.Gump)
+			SysMessage("Looking for BOD Gump and not found", errorTextColor)
+			return False
+		
+		return InGump(BOD.Gump, "bone"):
+
+	def GetAmount(self):
+		if debug:SysMessage("[debug]:In BOD.GetAmount", debugTextColor)
+		amount = 0
+		amount = PropertyValue[int](self.id, "Deeds in Book:")
+		return amount
+
+	def GetCompleted(self)
+		if debug:SysMessage("[debug]:In BOD.GetCompleted", debugTextColor)
+		completed = 0
+		completed = PropertyValue[int](self.id, self.name)
+		
+
 
 # *****MISC******
 textColor = 43
 errorTextColor = 33
 debugTextColor = 16
-craftBoneArmor = True
-craftStuddedArmor = True
 stopOnOutOfResource = True
 
 # *****GUMPS*****
 tailorGump 	= 0x38920abd
 tinkerGump 	= 0x38920abd
-BODGump 	= 0x5afbd742
 BODBookGump = 0x54f555df
-BODGumpCombineResponse = 2
 tailorMaterialResponse = 7
 tailorLeatherResponse = 6
 tailorSpinedResposne = 13
@@ -109,7 +251,6 @@ tailorBarbedResponse = 27
 # *****BOD*******
 BOD = 0x2258
 TailorBODhue = 1155
-currentBOD = 0
 
 # *************************
 # ******  MATERIALS  ******
@@ -124,18 +265,7 @@ horned 	= Material(0x1081, "HORNED LEATHER", 2117, 20, 500)
 barbed 	= Material(0x1081, "BARBED LEATHER", 2129, 20, 500)
 bone 	= Material(0xf7e,  "BONE", 0, 10, 200)
 
-LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
-LeatherTypes = ["spined", "horned", "barbed"]
 
-currentItemMaterials = []
-
-# *****TRACK MATERIALS******
-outOfCloth   = False
-outOfLeather = False
-outOfSpined  = False
-outOfHorned  = False
-outOfBarbed  = False
-outOfBone    = False
 
 
 # *************************
@@ -294,34 +424,6 @@ def SetLeatherType():
 	elif materialType == "barbed": ReplyGump(tailorGump, tailorBarbedResponse)
 
 	
-
-def CheckMaterials():
-	if debug: SysMessage("[debug]:In CheckMaterials", debugTextColor)
-	materialType = "cloth"
-	requiresBone = False
-	if currentBOD == 0:
-		SysMessage("Looking for required BOD material but no current BOD", errorTextColor)
-		return
-	else:
-		UseObject(currentBOD)
-		WaitForGump(BODGump, 5000)
-		for text in LeatherItems:
-			if InGump(BODGump, text):
-				materialType = "leather"
-				if text == "bone":
-					requiresBone = True
-				for type in LeatherTypes:
-					if InGump(BODGump, type):
-						materialType = type
-
-	SysMessage("[debug]:Material type is: " + materialType, debugTextColor)
-	if materialType == "cloth": RefillMaterial(cloth)
-	elif materialType == "leather": RefillMaterial(leather)
-	elif materialType == "spined": RefillMaterial(spined)
-	elif materialType == "horned": RefillMaterial(horned)
-	elif materialType == "barbed": RefillMaterial(barbed)
-		
-	if requiresBone: RefillMaterial(bone)
 	
 							
 		
@@ -414,83 +516,6 @@ def BookDeedsRemaining():
 		SysMessage("Did not find the 'smith bod source' alias", errorTextColor)
 		return 0
 
-
-def GetBODItem():
-	if debug: SysMessage("[debug]:In GetBODItem", debugTextColor)
-	if not GumpExists(BODGump) and currentBOD == 0:
-		SysMessage("Looking for BOD Gump and not found", errorTextColor)
-		return None
-	else:
-		UseObject(currentBOD)
-		WaitForGump(BODGump, 5000)
-	
-	# ********** Hats **********
-	if InGump(BODGump, "skullcap"): return Skullcap
-	elif InGump(BODGump, "bandana"): return Bandana
-	elif InGump(BODGump, "floppy hat"): return FloppyHat
-	elif InGump(BODGump, "wide-brim hat"): return WideBrimHat
-	elif InGump(BODGump, "tall straw hat"): return TallStrawHat
-	elif InGump(BODGump, "straw hat"): return StrawHat
-	elif InGump(BODGump, "wizard's hat"): return WizardHat
-	elif InGump(BODGump, "bonnet"): return Bonnet
-	elif InGump(BODGump, "feathered hat"): return FeatheredHat
-	elif InGump(BODGump, "tricorne hat"): return TricornHat
-	elif InGump(BODGump, "jester hat"): return JesterHat
-	# ********** Shirts and Pants **********
-	elif InGump(BODGump, "doublet"): return Doublet
-	elif InGump(BODGump, "fancy shirt"): return FancyShirt
-	elif InGump(BODGump, "shirt"): return Shirt		
-	elif InGump(BODGump, "surcoat"): return Surcoat
-	elif InGump(BODGump, "plain dress"): return PlainDress
-	elif InGump(BODGump, "fancy dress"): return FancyDress
-	elif InGump(BODGump, "cloak"): return Cloak
-	elif InGump(BODGump, "robe"): return Robe
-	elif InGump(BODGump, "jester suit"): return JesterSuit
-	elif InGump(BODGump, "short pants"): return ShortPants
-	elif InGump(BODGump, "long pants"): return LongPants
-	elif InGump(BODGump, "kilt"): return Kilt	
-	# ********** MISCELLANEOUS **********
-	elif InGump(BODGump, "body sash"): return BodySash
-	elif InGump(BODGump, "half apron"): return HalfApron
-	elif InGump(BODGump, "full apron"): return FullApron
-	# ********** FOOTWEAR **********
-	elif InGump(BODGump, "thigh boots"): return ThighBoots
-	elif InGump(BODGump, "sandals"): return Sandals
-	elif InGump(BODGump, "shoes"): return Shoes
-	elif InGump(BODGump, "boots"): return Boots
-	# ********** LEATHER ARMOR **********
-	elif InGump(BODGump, "leather gorget"): return LeatherGorget
-	elif InGump(BODGump, "leather cap"): return LeatherCap
-	elif InGump(BODGump, "leather gloves"): return LeatherGloves
-	elif InGump(BODGump, "leather leggings"): return LeatherLeggings
-	elif InGump(BODGump, "leather sleeves"): return LeatherSleeves
-	elif InGump(BODGump, "leather tunic"): return LeatherTunic
-	# ********** STUDDED ARMOR **********
-	elif InGump(BODGump, "studded gorget"): return StuddedGorget
-	elif InGump(BODGump, "studded gloves"): return StuddedGloves
-	elif InGump(BODGump, "studded leggings"): return StuddedLeggings
-	elif InGump(BODGump, "studded sleeves"): return StuddedSleeves
-	elif InGump(BODGump, "studded tunic"): return StuddedTunic
-	# ********** FEMALE ARMOR **********
-	elif InGump(BODGump, "leather shorts"): return LeatherShorts
-	elif InGump(BODGump, "leather skirt"): return LeatherSkirt
-	elif InGump(BODGump, "leather bustier"): return LeatherBustier
-	elif InGump(BODGump, "studded bustier"): return StuddedBustier
-	elif InGump(BODGump, "female leather armor"): return FemaleLeatherArmor
-	elif InGump(BODGump, "studded armor"): return StuddedArmor
-	# ********** BONE ARMOR **********
-	elif InGump(BODGump, "bone helmet"): return BoneHelmet
-	elif InGump(BODGump, "bone gloves"): return BoneGloves
-	elif InGump(BODGump, "bone leggings"): return BoneLeggings
-	elif InGump(BODGump, "bone arms"): return BoneArms
-	elif InGump(BODGump, "bone armor"): return BoneArmor
-	# ********** NEED THESE AT END ***********
-	elif InGump(BODGump, "skirt"): return Skirt
-	elif InGump(BODGump, "tunic"): return Tunic
-	elif InGump(BODGump, "cap"): return Cap
-	else:
-		SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
-		return None
 
 
 
