@@ -9,6 +9,7 @@ SetQuietMode(True)
 # To turn off/on the ingame help prompts *
 # ****************************************
 UseHelp = True
+debug = True
 # ****************************************
 # ****************************************
 
@@ -88,6 +89,7 @@ class Material:
 # *****MISC******
 textColor = 43
 errorTextColor = 33
+debugTextColor = 16
 craftBoneArmor = True
 craftStuddedArmor = True
 stopOnOutOfResource = True
@@ -98,6 +100,11 @@ tinkerGump 	= 0x38920abd
 BODGump 	= 0x5afbd742
 BODBookGump = 0x54f555df
 BODGumpCombineResponse = 2
+tailorMaterialResponse = 7
+tailorLeatherResponse = 6
+tailorSpinedResposne = 13
+tailorHornedResponse = 20
+tailorBarbedResponse = 27
 
 # *****BOD*******
 BOD = 0x2258
@@ -215,6 +222,7 @@ BoneArmor 		= CraftableItem(0x144f, 64, 30)
 # *************************
 
 def GetRestockContainer():
+	if debug: SysMessage("[debug]:In GetRestockContainer", debugTextColor)
 	container = GetAlias('tailor restock container')
 	if container == 0:
 		SysMessage("Looking for 'tailor restock container' alias and not found", errorTextColor)
@@ -226,12 +234,20 @@ def GetRestockContainer():
 		Stop()
 	else: return container
 
+def UnloadMaterials(skipIngots):
+	if debug: print("In UnloadMaterials", debugTextColor)
+	materials = [ingots, cloth, leather, spined, horned, barbed, bone]
+	container = GetRestockContainer()
+	for x in materials:
+		if not (skipIngots and x == ingots):
+			MoveType(x.graphic, "backpack", container, -1, -1, -1)
 
 def RefillMaterial(type):
+	if debug: SysMessage("[debug]:In RefillMaterial", debugTextColor)
 	container = GetRestockContainer()
 	if CountType(type.graphic, "backpack") < type.minPackAmt:
 		if CountType(type.graphic, container) == 0:
-			msg = "OUT OF " + name + "!"
+			msg = "OUT OF " + type.name + "!"
 			SysMessage(msg, errorTextColor)
 			if stopOnOutOfResource:
 				CancelTarget()
@@ -244,18 +260,43 @@ def RefillMaterial(type):
 				elif type == barbed: outOfBarbed = True
 				elif type == bone: outOfBone = True
 		else:
+			Pause(500)
 			MoveType(type.graphic, container, "backpack", -1, -1, -1, type.hue, type.restockAmt)
 			Pause(1500)
 
 
-def UnloadMaterials():
-	materials = [ingots, cloth, leather, spined, horned, barbed, bone]
-	container = GetRestockContainer()
-	for x in materials:
-		MoveType(x.graphic, "backpack", container, -1, -1, -1)
+def SetLeatherType():
+	if debug: SysMessage("[debug]:In SetLeatherType", debugTextColor)
+	materialType = "cloth"
+	if currentBOD == 0:
+		SysMessage("Trying to set leather type but no current BOD", errorTextColor)
+		return
+		
+	UseObject(currentBOD)
+	WaitForGump(BODGump, 5000)
+	for text in LeatherItems:
+		if InGump(BODGump, text):
+			materialType = "leather"			
+			for type in LeatherTypes:
+				if InGump(BODGump, type):
+					materialType = type
+					
+	if materialType == "cloth": return
+	
+	kit = GetSewingKit()
+	UseObject(kit)
+	WaitForGump(tailorGump, 5000)
+	ReplyGump(tailorGump, tailorMaterialResponse)
+	WaitForGump(tailorGump, 5000)
+	if materialType == "leather": ReplyGump(tailorGump, tailorLeatherResponse)
+	elif materialType == "spined": ReplyGump(tailorGump, tailorSpinedResposne)
+	elif materialType == "horned": ReplyGump(tailorGump, tailorHornedResponse)
+	elif materialType == "barbed": ReplyGump(tailorGump, tailorBarbedResponse)
 
+	
 
 def CheckMaterials():
+	if debug: SysMessage("[debug]:In CheckMaterials", debugTextColor)
 	materialType = "cloth"
 	requiresBone = False
 	if currentBOD == 0:
@@ -273,6 +314,7 @@ def CheckMaterials():
 					if InGump(BODGump, type):
 						materialType = type
 
+	print("Material type is: " + materialType)
 	if materialType == "cloth": RefillMaterial(cloth)
 	elif materialType == "leather": RefillMaterial(leather)
 	elif materialType == "spined": RefillMaterial(spined)
@@ -280,13 +322,22 @@ def CheckMaterials():
 	elif materialType == "barbed": RefillMaterial(barbed)
 		
 	if requiresBone: RefillMaterial(bone)
+	
 							
 		
 		
 def CraftTinkerItem(item):
+	if debug: SysMessage("[debug]:In CraftTinkerItem", debugTextColor)
+	# Careful of endless loop if we are crafting a tinker tool
+	toolCheck = True
+	if item.graphic == TinkerTool.graphic:
+		toolCheck = False
+		
+	if toolCheck:	
+		if CountType(TinkerTool.graphic, "backpack", TinkerTool.defaultHue) < 2:
+			CraftTinkerItem(TinkerTool)
+			
 	RefillMaterial(ingots)
-	if CountType(TinkerTool.graphic, 1, "backpack") < 2:
-		CraftTinkerItem(TinkerTool)	
 	UseType(TinkerTool.graphic)
 	WaitForGump(tinkerGump, 5000)
 	ReplyGump(tinkerGump, item.gumpResponse1)
@@ -296,6 +347,7 @@ def CraftTinkerItem(item):
 
 
 def GetScissors():
+	if debug: SysMessage("[debug]:In GetScissors", debugTextColor)
 	while not FindType(Scissors.graphic, 1, "backpack"):
 		CraftTinkerItem(Scissors)
 	FindType(Scissors.graphic, 1, "backpack")
@@ -303,6 +355,7 @@ def GetScissors():
 
 
 def GetSewingKit():
+	if debug: SysMessage("[debug]:In GetSewingKit", debugTextColor)
 	while not FindType(SewingKit.graphic, 1, "backpack", SewingKit.defaultHue):
 		container = GetRestockContainer()
 		if not FindType(SewingKit.graphic, 2, container, SewingKit.defaultHue):
@@ -318,6 +371,7 @@ def GetSewingKit():
 
 
 def CraftTailorItem(item):
+	if debug: SysMessage("[debug]:In CraftTailorItem", debugTextColor)
 	kit = GetSewingKit()
 	UseObject(kit)
 	WaitForGump(tailorGump, 5000)
@@ -350,6 +404,7 @@ def CraftTailorItem(item):
 
 
 def BookDeedsRemaining():
+	if debug:SysMessage("[debug]:In BookDeedsRemaining", debugTextColor)
 	bodBook = GetAlias("smith bod source")
 	
 	if not bodBook == 0:
@@ -361,7 +416,7 @@ def BookDeedsRemaining():
 
 
 def GetBODItem():
-
+	if debug: SysMessage("[debug]:In GetBODItem", debugTextColor)
 	if not GumpExists(BODGump) and currentBOD == 0:
 		SysMessage("Looking for BOD Gump and not found", errorTextColor)
 		return None
@@ -458,20 +513,24 @@ def Main():
 			WaitForTarget(5000)
 			Pause(600)
 			
-			CheckMaterials()
+			SetLeatherType()
 			Pause(600)
 			
 			item = GetBODItem()
 			
-			while TargetExists() and item != None:		
+			while TargetExists() and item != None:
+				CheckMaterials()
 				CraftTailorItem(item)
 		
 			# BOD is complete, move to destination book
 			if not TargetExists():
+				
 				destination = GetAlias('tailor bod destination')
 				MoveItem(currentBOD, destination)
 				currentBOD = 0
-				Pause(1500)
+				Pause(500)
+				UnloadMaterials(True)
+				Pause(500)
 		
 		# Get A BOD out of the book
 		else:
@@ -481,7 +540,7 @@ def Main():
 			ReplyGump(BODBookGump, 5)
 			Pause(1500)
 		
-	UnloadMaterials()
+	UnloadMaterials(False)
 	SysMessage("NO BODS TO FILL", textColor)
 	CancelTarget()
 	Stop()
