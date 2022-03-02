@@ -235,7 +235,7 @@ def GetRestockContainer():
 	else: return container
 
 def UnloadMaterials(skipIngots):
-	if debug: print("In UnloadMaterials", debugTextColor)
+	if debug: SysMessage("[debug]:In UnloadMaterials", debugTextColor)
 	materials = [ingots, cloth, leather, spined, horned, barbed, bone]
 	container = GetRestockContainer()
 	for x in materials:
