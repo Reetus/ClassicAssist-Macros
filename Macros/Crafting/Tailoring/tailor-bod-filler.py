@@ -1,15 +1,12 @@
-# Name: Tailor BOD Filler
-# Description: This will fill all Tailor BODs from a Source BOD Book. Set your filter on this book to pull only the BODs you want filled.
-# Author: raveX
-# Era: Any
+from Assistant import Engine
 
 SetQuietMode(True)
 
 # ****************************************
 # To turn off/on the ingame help prompts *
 # ****************************************
-UseHelp = True
-debug = True
+UseHelp = False
+DEBUG = False
 # ****************************************
 # ****************************************
 #                  GLOBALS                
@@ -17,12 +14,11 @@ debug = True
 currentBOD 	 = None
 craftBoneArmor 	  = True
 craftStuddedArmor = True
-outOfCloth   = False
-outOfLeather = False
-outOfSpined  = False
-outOfHorned  = False
-outOfBarbed  = False
-outOfBone    = False
+
+
+textColor = 43
+errorTextColor = 33
+debugTextColor = 16
 
 
 msg = "Welcome to the Tailor BOD Filler macro.  This macro " \
@@ -32,8 +28,8 @@ msg = "Welcome to the Tailor BOD Filler macro.  This macro " \
 if UseHelp: ConfirmPrompt(msg)
 
 msg = "First we will want to know what BOD book you want to pull BODs " \
-      "out of to fill.  Be sure to set the filter on the book to the " \
-      "specific type of BODs you want to fill here. At a minimum, you will " \
+      "out of to fill.\n\nBe sure to set the filter on the book to the " \
+      "specific type of BODs you want to fill here. AT A MINIMUM, you will " \
       "want to ensure you have selected Tailoring and Small BODs."
       
 if not FindAlias('tailor bod source'):
@@ -81,20 +77,131 @@ msg = "You are all set! \nOne final note, if you prefer to not see these prompts
 
 if UseHelp: ConfirmPrompt(msg)
 
-class CraftableItem:
-	def __init__(self, graphic, gumpResponse1, gumpResponse2):
-		self.graphic = graphic
-		self.gumpResponse1 = gumpResponse1
-		self.gumpResponse2 = gumpResponse2
-		self.defaultHue = 0
-		
+# *************************
+# ******  MATERIALS  ******
+# *************************		
 class Material:
+	outOfCloth   = True
+	outOfLeather = False
+	outOfSpined  = False
+	outOfHorned  = True
+	outOfBarbed  = True
+	outOfBone    = False
+	
 	def __init__(self, graphic, name, hue, minPackAmt, restockAmt):
 		self.graphic = graphic
 		self.name = name
 		self.hue = hue
 		self.minPackAmt = minPackAmt
 		self.restockAmt = restockAmt
+		
+	def __str__(self):
+		return self.name
+
+# *************************
+# FYI - Cloth will be Cut Cloth only, but of any color unless you change the hue setting below
+# *************************
+# FORMAT: Material(graphic, name, hue, minPackAmt, restockAmt)
+# *************************
+ingots 	= Material(0x1bf2, "INGOTS", 0, 2, 50)
+cloth 	= Material(0x1766, "CLOTH", -1, 20, 500)
+leather = Material(0x1081, "LEATHER", 0, 20, 500)
+spined 	= Material(0x1081, "SPINED LEATHER", 2220, 20, 500)
+horned 	= Material(0x1081, "HORNED LEATHER", 2117, 20, 500)
+barbed 	= Material(0x1081, "BARBED LEATHER", 2129, 20, 500)
+bone 	= Material(0xf7e,  "BONE", 0, 10, 200)
+
+
+
+# *************************
+# ****** CRAFT ITEMS ******
+# *************************
+class CraftableItem:
+	def __init__(self, graphic, gumpResponse1, gumpResponse2, name):
+		self.graphic = graphic
+		self.gumpResponse1 = gumpResponse1
+		self.gumpResponse2 = gumpResponse2
+		self.name = name
+		self.defaultHue = 0
+		
+	def __str__(self):
+		return self.name
+		
+# *************************
+# For your server, YOUR GUMP RESPONSES MAY BE DIFFERENT than those listed here.
+# You can easily determine what they should be by creating a test macro,
+# record crafting each item, and replacing the values below.  The itemGraphics should
+# not need to change (unless you are on a very custom shard)
+# *************************
+# FORMAT: CraftableItem(graphic, gumpResponse1, gumpResponse2, name)
+# *************************
+# *****Tools******
+Scissors 		= CraftableItem(0xf9f,  15, 2, "scissors")
+TinkerTool 		= CraftableItem(0x1eb8, 15, 23, "tinker tool")
+SewingKit 		= CraftableItem(0xf9d,  15, 44, "sewing kit")
+# *****Hats*****
+Skullcap 		= CraftableItem(0x1544, 8, 2, "skullcap")
+Bandana 		= CraftableItem(0x1540, 8, 9, "bandana")
+FloppyHat 		= CraftableItem(0x1713, 8, 16, "floppy hat")
+Cap 			= CraftableItem(0x1715, 8, 23, "cap")
+WideBrimHat 	= CraftableItem(0x1714, 8, 30, "wide-brim hat")
+StrawHat 		= CraftableItem(0x1717, 8, 37, "straw hat")
+TallStrawHat 	= CraftableItem(0x1716, 8, 44, "tall straw hat")
+WizardHat 		= CraftableItem(0x1718, 8, 51, "wizard's hat")
+Bonnet 			= CraftableItem(0x1719, 8, 58, "bonnet")
+FeatheredHat	= CraftableItem(0x171a, 8, 65, "feathered hat")
+TricornHat 		= CraftableItem(0x171b, 8, 72, "tricorne hat")
+JesterHat 		= CraftableItem(0x171c, 8, 79, "jester hat")
+# *****Shirts and Pants*****
+Doublet 		= CraftableItem(0x1f7b, 15, 2, "doublet")
+Shirt 			= CraftableItem(0x1517, 15, 9, "shirt")
+FancyShirt 		= CraftableItem(0x1efd, 15, 16, "fancy shirt")
+Tunic 			= CraftableItem(0x1fa1, 15, 23, "tunic")
+Surcoat 		= CraftableItem(0x1ffd, 15, 30, "surcoat")
+PlainDress 		= CraftableItem(0x1f01, 15, 37, "plain dress")
+FancyDress 		= CraftableItem(0x1f00, 15, 44, "fancy dress")
+Cloak 			= CraftableItem(0x1515, 15, 51, "cloak")
+Robe			= CraftableItem(0x1f03, 15, 58, "robe")
+JesterSuit 		= CraftableItem(0x1f9f, 15, 65, "jester suit")
+ShortPants 		= CraftableItem(0x152e, 15, 128, "short pants")
+LongPants 		= CraftableItem(0x1539, 15, 135, "long pants")
+Kilt 			= CraftableItem(0x1537, 15, 142, "kilt")
+Skirt 			= CraftableItem(0x1516, 15, 149, "skirt")
+# *****Miscellaneous*****
+BodySash 		= CraftableItem(0x1541, 22, 2, "body sash")
+HalfApron 		= CraftableItem(0x153b, 22, 9, "half apron")
+FullApron 		= CraftableItem(0x153d, 22, 16, "full apron")
+# *****Footwear*****
+Sandals 		= CraftableItem(0x170d, 29, 30, "sandals")
+Shoes 			= CraftableItem(0x170f, 29, 37, "shoes")
+Boots 			= CraftableItem(0x170b, 29, 44, "boots")
+ThighBoots 		= CraftableItem(0x1711, 29, 51, "thigh boots")
+# *****Leather Armor*****
+LeatherGorget 	= CraftableItem(0x13c7, 36, 23, "leather gorget")
+LeatherCap 		= CraftableItem(0x1db9, 36, 30, "leather cap")
+LeatherGloves 	= CraftableItem(0x13c6, 36, 37, "leather gloves")
+LeatherSleeves 	= CraftableItem(0x13cd, 36, 44, "leather leggings")
+LeatherLeggings = CraftableItem(0x13cb, 36, 51, "leather sleeves")
+LeatherTunic 	= CraftableItem(0x13cc, 36, 58, "leather tunic")
+# *****Studded Armor*****
+StuddedGorget 	= CraftableItem(0x13d6, 50, 2, "studded gorget")
+StuddedGloves 	= CraftableItem(0x13d5, 50, 9, "studded gloves")
+StuddedSleeves 	= CraftableItem(0x13dc, 50, 16, "studded leggings")
+StuddedLeggings = CraftableItem(0x13da, 50, 23, "studded sleeves")
+StuddedTunic 	= CraftableItem(0x13db, 50, 30, "studded tunic")
+# *****Female Armor*****
+LeatherShorts 		= CraftableItem(0x1c00, 57, 2, "leather shorts")
+LeatherSkirt 		= CraftableItem(0x1c08, 57, 9, "leather skirt")
+LeatherBustier 		= CraftableItem(0x1c0a, 57, 16, "leather bustier")
+StuddedBustier 		= CraftableItem(0x1c0c, 57, 23, "studded bustier")
+FemaleLeatherArmor 	= CraftableItem(0x1c06, 57, 30, "female leather armor")
+StuddedArmor 		= CraftableItem(0x1c02, 57, 37, "studded armor")
+# *****Bone Armor*****
+BoneHelmet 		= CraftableItem(0x1451, 64, 2, "bone helmet")
+BoneGloves 		= CraftableItem(0x1450, 64, 9, "bone gloves")
+BoneArms 		= CraftableItem(0x144e, 64, 16, "bone leggings")
+BoneLeggings 	= CraftableItem(0x1452, 64, 23, "bone arms")
+BoneArmor 		= CraftableItem(0x144f, 64, 30, "bone armor")
 
 class BOD:
 	Gump = 0x5afbd742
@@ -102,9 +209,8 @@ class BOD:
 	LeatherItems = ["shoes", "sandals", "boots", "leather", "studded", "bone"]
 	LeatherTypes = ["spined", "horned", "barbed"]
 
-	def __init__(self, id, name):
+	def __init__(self, id):
 		self.id = id
-		self.name = name
 		self.item = self.GetItem()
 		self.amount = self.GetAmount()
 		self.completed = self.GetCompleted()
@@ -114,122 +220,115 @@ class BOD:
 
 
 	def GetItem(self):
-		if debug: SysMessage("[debug]:In BOD.GetItem", debugTextColor)
+		if DEBUG: SysMessage("[debug]:In BOD.GetItem", debugTextColor)
 		UseObject(self.id)
 		WaitForGump(BOD.Gump, 5000)
-		if not GumpExists(BOD.Gump)
+		if not GumpExists(BOD.Gump):
 			SysMessage("Looking for BOD Gump and not found", errorTextColor)
 			return None
-	
-		# ********** Hats **********
-		if InGump(BOD.Gump, "skullcap"): return Skullcap
-		elif InGump(BOD.Gump, "bandana"): return Bandana
-		elif InGump(BOD.Gump, "floppy hat"): return FloppyHat
-		elif InGump(BOD.Gump, "wide-brim hat"): return WideBrimHat
-		elif InGump(BOD.Gump, "tall straw hat"): return TallStrawHat
-		elif InGump(BOD.Gump, "straw hat"): return StrawHat
-		elif InGump(BOD.Gump, "wizard's hat"): return WizardHat
-		elif InGump(BOD.Gump, "bonnet"): return Bonnet
-		elif InGump(BOD.Gump, "feathered hat"): return FeatheredHat
-		elif InGump(BOD.Gump, "tricorne hat"): return TricornHat
-		elif InGump(BOD.Gump, "jester hat"): return JesterHat
-		# ********** Shirts and Pants **********
-		elif InGump(BOD.Gump, "doublet"): return Doublet
-		elif InGump(BOD.Gump, "fancy shirt"): return FancyShirt
-		elif InGump(BOD.Gump, "shirt"): return Shirt		
-		elif InGump(BOD.Gump, "surcoat"): return Surcoat
-		elif InGump(BOD.Gump, "plain dress"): return PlainDress
-		elif InGump(BOD.Gump, "fancy dress"): return FancyDress
-		elif InGump(BOD.Gump, "cloak"): return Cloak
-		elif InGump(BOD.Gump, "robe"): return Robe
-		elif InGump(BOD.Gump, "jester suit"): return JesterSuit
-		elif InGump(BOD.Gump, "short pants"): return ShortPants
-		elif InGump(BOD.Gump, "long pants"): return LongPants
-		elif InGump(BOD.Gump, "kilt"): return Kilt	
-		# ********** MISCELLANEOUS **********
-		elif InGump(BOD.Gump, "body sash"): return BodySash
-		elif InGump(BOD.Gump, "half apron"): return HalfApron
-		elif InGump(BOD.Gump, "full apron"): return FullApron
-		# ********** FOOTWEAR **********
-		elif InGump(BOD.Gump, "thigh boots"): return ThighBoots
-		elif InGump(BOD.Gump, "sandals"): return Sandals
-		elif InGump(BOD.Gump, "shoes"): return Shoes
-		elif InGump(BOD.Gump, "boots"): return Boots
-		# ********** LEATHER ARMOR **********
-		elif InGump(BOD.Gump, "leather gorget"): return LeatherGorget
-		elif InGump(BOD.Gump, "leather cap"): return LeatherCap
-		elif InGump(BOD.Gump, "leather gloves"): return LeatherGloves
-		elif InGump(BOD.Gump, "leather leggings"): return LeatherLeggings
-		elif InGump(BOD.Gump, "leather sleeves"): return LeatherSleeves
-		elif InGump(BOD.Gump, "leather tunic"): return LeatherTunic
-		# ********** STUDDED ARMOR **********
-		elif InGump(BOD.Gump, "studded gorget"): return StuddedGorget
-		elif InGump(BOD.Gump, "studded gloves"): return StuddedGloves
-		elif InGump(BOD.Gump, "studded leggings"): return StuddedLeggings
-		elif InGump(BOD.Gump, "studded sleeves"): return StuddedSleeves
-		elif InGump(BOD.Gump, "studded tunic"): return StuddedTunic
-		# ********** FEMALE ARMOR **********
-		elif InGump(BOD.Gump, "leather shorts"): return LeatherShorts
-		elif InGump(BOD.Gump, "leather skirt"): return LeatherSkirt
-		elif InGump(BOD.Gump, "leather bustier"): return LeatherBustier
-		elif InGump(BOD.Gump, "studded bustier"): return StuddedBustier
-		elif InGump(BOD.Gump, "female leather armor"): return FemaleLeatherArmor
-		elif InGump(BOD.Gump, "studded armor"): return StuddedArmor
-		# ********** BONE ARMOR **********
-		elif InGump(BOD.Gump, "bone helmet"): return BoneHelmet
-		elif InGump(BOD.Gump, "bone gloves"): return BoneGloves
-		elif InGump(BOD.Gump, "bone leggings"): return BoneLeggings
-		elif InGump(BOD.Gump, "bone arms"): return BoneArms
-		elif InGump(BOD.Gump, "bone armor"): return BoneArmor
-		# ********** NEED THESE AT END ***********
-		elif InGump(BOD.Gump, "skirt"): return Skirt
-		elif InGump(BOD.Gump, "tunic"): return Tunic
-		elif InGump(BOD.Gump, "cap"): return Cap
-		else:
-			SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
-			return None
+			
+		items = [Skullcap, Bandana, FloppyHat, WideBrimHat, TallStrawHat, StrawHat, WizardHat, Bonnet, FeatheredHat,
+				TricornHat, JesterHat, Doublet, FancyShirt, Shirt, Surcoat, PlainDress, FancyDress, Cloak, Robe,
+				JesterSuit, ShortPants, LongPants, Kilt, BodySash, HalfApron, FullApron, ThighBoots, Sandals, Shoes,
+				Boots, LeatherGorget, LeatherCap, LeatherGloves, LeatherLeggings, LeatherSleeves, LeatherTunic, 
+				StuddedGorget, StuddedGloves, StuddedLeggings, StuddedSleeves, StuddedTunic, LeatherShorts, 
+				LeatherSkirt, LeatherBustier, StuddedBustier, FemaleLeatherArmor, StuddedArmor, BoneHelmet, BoneGloves,
+				BoneLeggings, BoneArms, BoneArmor, Skirt, Tunic, Cap]
+		
+		
+		for i in items:
+			if InGump(BOD.Gump, i.name): 
+				return i
+
+		SysMessage("Did not find a supported item in the BOD Gump", errorTextColor)
+		self.isCompletable = False
+		return None
+
 
 	def GetMaterial(self):
-		if debug: SysMessage("[debug]:In BOD.GetMaterials", debugTextColor)
+		if DEBUG: SysMessage("[debug]:In BOD.GetMaterials", debugTextColor)
 		materialType = "cloth"
 		UseObject(self.id)
 		WaitForGump(BOD.Gump, 5000)
-		if not GumpExists(BOD.Gump)
+		if not GumpExists(BOD.Gump):
 			SysMessage("Looking for BOD Gump and not found", errorTextColor)
 			return None
 
-		for text in LeatherItems:
+		for text in BOD.LeatherItems:
 			if InGump(BOD.Gump, text):
 				materialType = "leather"
-				for type in LeatherTypes:
+				for type in BOD.LeatherTypes:
 					if InGump(BOD.Gump, type):
 						materialType = type
 
 		SysMessage("[debug]:Material type is: " + materialType, debugTextColor)
 		return materialType
 
+
 	def CheckIfBone(self):
-		if debug: SysMessage("[debug]:In BOD.CheckIfBone", debugTextColor)
+		if DEBUG: SysMessage("[debug]:In BOD.CheckIfBone", debugTextColor)
 		
 		UseObject(self.id)
 		WaitForGump(BOD.Gump, 5000)
-		if not GumpExists(BOD.Gump)
+		if not GumpExists(BOD.Gump):
 			SysMessage("Looking for BOD Gump and not found", errorTextColor)
 			return False
 		
-		return InGump(BOD.Gump, "bone"):
+		return InGump(BOD.Gump, "bone")
+
+
+	def CheckIfCompletable(self):
+		completable = True
+		if self.material == "cloth":
+			completable = not(Material.outOfCloth)
+		elif self.material == "leather":
+			completable = not(Material.outOfLeather)
+		elif self.material == "spined":
+			completable = not(Material.outOfSpined)
+		elif self.material == "horned":
+			completable = not(Material.outOfHorned)
+		elif self.material == "barbed":
+			completable = not(Material.outOfBarbed)
+			
+		if self.isBone:
+			completable = completable and not(Material.outOfBone)
+			
+		return completable
 
 	def GetAmount(self):
-		if debug:SysMessage("[debug]:In BOD.GetAmount", debugTextColor)
+		if DEBUG: SysMessage("[debug]:In BOD.GetAmount", debugTextColor)
 		amount = 0
-		amount = PropertyValue[int](self.id, "Deeds in Book:")
+		amount = PropertyValue[int](self.id, "Amount to make:")
 		return amount
 
-	def GetCompleted(self)
-		if debug:SysMessage("[debug]:In BOD.GetCompleted", debugTextColor)
+
+	def GetCompleted(self):
+		if DEBUG: SysMessage("[debug]:In BOD.GetCompleted", debugTextColor)
 		completed = 0
-		completed = PropertyValue[int](self.id, self.name)
+		bod = Engine.Items.GetItem(self.id)
+		for property in bod.Properties:
+			if DEBUG: SysMessage("[debug]:property: " + property.Text, debugTextColor)
+			if self.item.name in property.Text:
+				for arg in property.Arguments:
+					if DEBUG: SysMessage("[debug]:argument: " + arg, debugTextColor)
+				completed = int(property.Arguments[1])
 		
+		return completed
+		
+		
+bod = BOD(0x40023709)
+#bod = BOD(0x4003abe1)
+#bod = BOD(0x40023541)
+
+print("ID: " + str(bod.id))
+print("Graphic: " + str(bod.item.graphic))
+print("Amount to make: " + str(bod.amount))
+print("Material: " + bod.material)
+print("Amount completed: " + str(bod.completed))
+print("Is Bone: " + str(bod.isBone))
+print("Is completable: " + str(bod.isCompletable))
+
+
 
 
 # *****MISC******
@@ -253,106 +352,11 @@ BOD = 0x2258
 TailorBODhue = 1155
 
 # *************************
-# ******  MATERIALS  ******
-# *************************
-# FORMAT: Material(graphic, name, hue, minPackAmt, restockAmt)
-# *************************
-ingots 	= Material(0x1bf2, "INGOTS", 0, 2, 50)
-cloth 	= Material(0x1766, "CLOTH", -1, 20, 500)
-leather = Material(0x1081, "LEATHER", 0, 20, 500)
-spined 	= Material(0x1081, "SPINED LEATHER", 2220, 20, 500)
-horned 	= Material(0x1081, "HORNED LEATHER", 2117, 20, 500)
-barbed 	= Material(0x1081, "BARBED LEATHER", 2129, 20, 500)
-bone 	= Material(0xf7e,  "BONE", 0, 10, 200)
-
-
-
-
-# *************************
-# ****** CRAFT ITEMS ******
-# *************************
-# For your server, your gump responses may be different than those listed here.
-# You can easily determine what they should be by creating a test macro,
-# record crafting each item, and replacing the values below.  The itemGraphics should
-# not need to change (unless you are on a very custom shard)
-# *************************
-# FORMAT: CraftableItem(graphic, gumpResponse1, gumpResponse2)
-# *************************
-# *****Tools******
-SewingKit 		= CraftableItem(0xf9d,  15, 44)
-Scissors 		= CraftableItem(0xf9f,  15, 2)
-TinkerTool 		= CraftableItem(0x1eb8, 15, 23)
-# *****Hats*****
-Skullcap 		= CraftableItem(0x1544, 8, 2)
-Bandana 		= CraftableItem(0x1540, 8, 9)
-FloppyHat 		= CraftableItem(0x1713, 8, 16)
-Cap 			= CraftableItem(0x1715, 8, 23)
-WideBrimHat 	= CraftableItem(0x1714, 8, 30)
-StrawHat 		= CraftableItem(0x1717, 8, 37)
-TallStrawHat 	= CraftableItem(0x1716, 8, 44)
-WizardHat 		= CraftableItem(0x1718, 8, 51)
-Bonnet 			= CraftableItem(0x1719, 8, 58)
-FeatheredHat	= CraftableItem(0x171a, 8, 65)
-TricornHat 		= CraftableItem(0x171b, 8, 72)
-JesterHat 		= CraftableItem(0x171c, 8, 79)
-# *****Shirts and Pants*****
-Doublet 		= CraftableItem(0x1f7b, 15, 2)
-Shirt 			= CraftableItem(0x1517, 15, 9)
-FancyShirt 		= CraftableItem(0x1efd, 15, 16)
-Tunic 			= CraftableItem(0x1fa1, 15, 23)
-Surcoat 		= CraftableItem(0x1ffd, 15, 30)
-PlainDress 		= CraftableItem(0x1f01, 15, 37)
-FancyDress 		= CraftableItem(0x1f00, 15, 44)
-Cloak 			= CraftableItem(0x1515, 15, 51)
-Robe			= CraftableItem(0x1f03, 15, 58)
-JesterSuit 		= CraftableItem(0x1f9f, 15, 65)
-ShortPants 		= CraftableItem(0x152e, 15, 128)
-LongPants 		= CraftableItem(0x1539, 15, 135)
-Kilt 			= CraftableItem(0x1537, 15, 142)
-Skirt 			= CraftableItem(0x1516, 15, 149)
-# *****Miscellaneous*****
-BodySash 		= CraftableItem(0x1541, 22, 2)
-HalfApron 		= CraftableItem(0x153b, 22, 9)
-FullApron 		= CraftableItem(0x153d, 22, 16)
-# *****Footwear*****
-Sandals 		= CraftableItem(0x170d, 29, 30)
-Shoes 			= CraftableItem(0x170f, 29, 37)
-Boots 			= CraftableItem(0x170b, 29, 44)
-ThighBoots 		= CraftableItem(0x1711, 29, 51)
-# *****Leather Armor*****
-LeatherGorget 	= CraftableItem(0x13c7, 36, 23)
-LeatherCap 		= CraftableItem(0x1db9, 36, 30)
-LeatherGloves 	= CraftableItem(0x13c6, 36, 37)
-LeatherSleeves 	= CraftableItem(0x13cd, 36, 44)
-LeatherLeggings = CraftableItem(0x13cb, 36, 51)
-LeatherTunic 	= CraftableItem(0x13cc, 36, 58)
-# *****Studded Armor*****
-StuddedGorget 	= CraftableItem(0x13d6, 50, 2)
-StuddedGloves 	= CraftableItem(0x13d5, 50, 9)
-StuddedSleeves 	= CraftableItem(0x13dc, 50, 16)
-StuddedLeggings = CraftableItem(0x13da, 50, 23)
-StuddedTunic 	= CraftableItem(0x13db, 50, 30)
-# *****Female Armor*****
-LeatherShorts 		= CraftableItem(0x1c00, 57, 2)
-LeatherSkirt 		= CraftableItem(0x1c08, 57, 9)
-LeatherBustier 		= CraftableItem(0x1c0a, 57, 16)
-StuddedBustier 		= CraftableItem(0x1c0c, 57, 23)
-FemaleLeatherArmor 	= CraftableItem(0x1c06, 57, 30)
-StuddedArmor 		= CraftableItem(0x1c02, 57, 37)
-# *****Bone Armor*****
-BoneHelmet 		= CraftableItem(0x1451, 64, 2)
-BoneGloves 		= CraftableItem(0x1450, 64, 9)
-BoneArms 		= CraftableItem(0x144e, 64, 16)
-BoneLeggings 	= CraftableItem(0x1452, 64, 23)
-BoneArmor 		= CraftableItem(0x144f, 64, 30)
-
-
-# *************************
 # ******  FUNCTIONS  ******
 # *************************
 
 def GetRestockContainer():
-	if debug: SysMessage("[debug]:In GetRestockContainer", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In GetRestockContainer", debugTextColor)
 	container = GetAlias('tailor restock container')
 	if container == 0:
 		SysMessage("Looking for 'tailor restock container' alias and not found", errorTextColor)
@@ -365,7 +369,7 @@ def GetRestockContainer():
 	else: return container
 
 def UnloadMaterials(skipIngots):
-	if debug: SysMessage("[debug]:In UnloadMaterials", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In UnloadMaterials", debugTextColor)
 	materials = [ingots, cloth, leather, spined, horned, barbed, bone]
 	container = GetRestockContainer()
 	for x in materials:
@@ -373,7 +377,7 @@ def UnloadMaterials(skipIngots):
 			MoveType(x.graphic, "backpack", container, -1, -1, -1)
 
 def RefillMaterial(type):
-	if debug: SysMessage("[debug]:In RefillMaterial", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In RefillMaterial", debugTextColor)
 	container = GetRestockContainer()
 	if CountType(type.graphic, "backpack") < type.minPackAmt:
 		if CountType(type.graphic, container) == 0:
@@ -396,7 +400,7 @@ def RefillMaterial(type):
 
 
 def SetLeatherType():
-	if debug: SysMessage("[debug]:In SetLeatherType", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In SetLeatherType", debugTextColor)
 	materialType = "cloth"
 	if currentBOD == 0:
 		SysMessage("Trying to set leather type but no current BOD", errorTextColor)
@@ -424,12 +428,9 @@ def SetLeatherType():
 	elif materialType == "barbed": ReplyGump(tailorGump, tailorBarbedResponse)
 
 	
-	
-							
-		
 		
 def CraftTinkerItem(item):
-	if debug: SysMessage("[debug]:In CraftTinkerItem", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In CraftTinkerItem", debugTextColor)
 	# Careful of endless loop if we are crafting a tinker tool
 	toolCheck = True
 	if item.graphic == TinkerTool.graphic:
@@ -449,7 +450,7 @@ def CraftTinkerItem(item):
 
 
 def GetScissors():
-	if debug: SysMessage("[debug]:In GetScissors", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In GetScissors", debugTextColor)
 	while not FindType(Scissors.graphic, 1, "backpack"):
 		CraftTinkerItem(Scissors)
 	FindType(Scissors.graphic, 1, "backpack")
@@ -457,7 +458,7 @@ def GetScissors():
 
 
 def GetSewingKit():
-	if debug: SysMessage("[debug]:In GetSewingKit", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In GetSewingKit", debugTextColor)
 	while not FindType(SewingKit.graphic, 1, "backpack", SewingKit.defaultHue):
 		container = GetRestockContainer()
 		if not FindType(SewingKit.graphic, 2, container, SewingKit.defaultHue):
@@ -473,7 +474,7 @@ def GetSewingKit():
 
 
 def CraftTailorItem(item):
-	if debug: SysMessage("[debug]:In CraftTailorItem", debugTextColor)
+	if DEBUG: SysMessage("[debug]:In CraftTailorItem", debugTextColor)
 	kit = GetSewingKit()
 	UseObject(kit)
 	WaitForGump(tailorGump, 5000)
@@ -506,7 +507,7 @@ def CraftTailorItem(item):
 
 
 def BookDeedsRemaining():
-	if debug:SysMessage("[debug]:In BookDeedsRemaining", debugTextColor)
+	if DEBUG:SysMessage("[debug]:In BookDeedsRemaining", debugTextColor)
 	bodBook = GetAlias("smith bod source")
 	
 	if not bodBook == 0:
@@ -515,8 +516,6 @@ def BookDeedsRemaining():
 	else:
 		SysMessage("Did not find the 'smith bod source' alias", errorTextColor)
 		return 0
-
-
 
 
 # ******************************
