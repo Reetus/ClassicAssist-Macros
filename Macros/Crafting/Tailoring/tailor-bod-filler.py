@@ -203,6 +203,7 @@ BoneArms 		= CraftableItem(0x144e, 64, 16, "bone leggings")
 BoneLeggings 	= CraftableItem(0x1452, 64, 23, "bone arms")
 BoneArmor 		= CraftableItem(0x144f, 64, 30, "bone armor")
 
+
 class BOD:
 	Gump = 0x5afbd742
 	GumpCombineResponse = 2
@@ -218,15 +219,19 @@ class BOD:
 		self.isBone = self.CheckIfBone()
 		self.isCompletable = self.CheckIfCompletable()
 
-
-	def GetItem(self):
-		if DEBUG: SysMessage("[debug]:In BOD.GetItem", debugTextColor)
+	def OpenGump(self):
+		if DEBUG: SysMessage("[debug]:In BOD.OpenGump", debugTextColor)
 		UseObject(self.id)
 		WaitForGump(BOD.Gump, 5000)
 		if not GumpExists(BOD.Gump):
 			SysMessage("Looking for BOD Gump and not found", errorTextColor)
-			return None
-			
+			return False
+		return True
+
+
+	def GetItem(self):
+		if DEBUG: SysMessage("[debug]:In BOD.GetItem", debugTextColor)
+					
 		items = [Skullcap, Bandana, FloppyHat, WideBrimHat, TallStrawHat, StrawHat, WizardHat, Bonnet, FeatheredHat,
 				TricornHat, JesterHat, Doublet, FancyShirt, Shirt, Surcoat, PlainDress, FancyDress, Cloak, Robe,
 				JesterSuit, ShortPants, LongPants, Kilt, BodySash, HalfApron, FullApron, ThighBoots, Sandals, Shoes,
@@ -235,7 +240,7 @@ class BOD:
 				LeatherSkirt, LeatherBustier, StuddedBustier, FemaleLeatherArmor, StuddedArmor, BoneHelmet, BoneGloves,
 				BoneLeggings, BoneArms, BoneArmor, Skirt, Tunic, Cap]
 		
-		
+		if not self.OpenGump(): return None
 		for i in items:
 			if InGump(BOD.Gump, i.name): 
 				return i
@@ -247,13 +252,9 @@ class BOD:
 
 	def GetMaterial(self):
 		if DEBUG: SysMessage("[debug]:In BOD.GetMaterials", debugTextColor)
-		materialType = "cloth"
-		UseObject(self.id)
-		WaitForGump(BOD.Gump, 5000)
-		if not GumpExists(BOD.Gump):
-			SysMessage("Looking for BOD Gump and not found", errorTextColor)
-			return None
 
+		materialType = "cloth"
+		if not self.OpenGump(): return None
 		for text in BOD.LeatherItems:
 			if InGump(BOD.Gump, text):
 				materialType = "leather"
@@ -261,19 +262,15 @@ class BOD:
 					if InGump(BOD.Gump, type):
 						materialType = type
 
-		SysMessage("[debug]:Material type is: " + materialType, debugTextColor)
+		if DEBUG: SysMessage("[debug]:Material type is: " + materialType, debugTextColor)
 		return materialType
 
 
 	def CheckIfBone(self):
 		if DEBUG: SysMessage("[debug]:In BOD.CheckIfBone", debugTextColor)
 		
-		UseObject(self.id)
-		WaitForGump(BOD.Gump, 5000)
-		if not GumpExists(BOD.Gump):
-			SysMessage("Looking for BOD Gump and not found", errorTextColor)
-			return False
-		
+		if not self.OpenGump(): 
+			return False		
 		return InGump(BOD.Gump, "bone")
 
 
