@@ -180,6 +180,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9098735+00:00"
     },
     {
+        "Name":  "Scroll Maker",
+        "Description":  "Crafts selected scrolls up to selected amount. Read instructions",
+        "Author":  "Kakagriss",
+        "Shard":  "UOG-Demise",
+        "Id":  "b9b4d4a6-969e-450d-b2d1-f261bbaea91c",
+        "Categories":  "Crafting",
+        "FileName":  "Crafting\\scrollmaker.py",
+        "Size":  8973,
+        "SHA1":  "260C7F5BA54E3E3D482CF4EA3122B25660DCFF86",
+        "ModifiedDate":  "2022-03-06T01:05:07.9098735+00:00"
+    },
+    {
         "Name":  "Potion Factory",
         "Description":  "Crafts the selected potion up to the selected maximum amount",
         "Author":  "Reetus",
