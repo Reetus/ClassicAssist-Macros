@@ -4,6 +4,7 @@
         "Description":  "An example of creating WPF windows with Xaml layouts in ClassicAssist",
         "Author":  "Reetus",
         "Era":  "AOS",
+        "Id":  "43a28158-e8d7-4558-99d9-534b7b57fe40",
         "Categories":  "Advanced",
         "FileName":  "Advanced\\wpfwindowxamllayoutexample.py",
         "Size":  4518,
@@ -15,6 +16,7 @@
         "Description":  "Example functions to send message to Discord/PushBullet",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "0bb28d8f-dec9-4425-af5d-594377142565",
         "Categories":  [
                            "Advanced",
                            "Examples"
@@ -29,6 +31,7 @@
         "Description":  "Find all items within a container containing the given text in it\u0027s name",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "c89e5f02-6ece-4d0b-b3f9-3695616d218b",
         "Categories":  [
                            "Advanced",
                            "Examples"
@@ -43,6 +46,7 @@
         "Description":  "Issues a remove object on all multis in range, useful for looking inside the walls of houses",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "6ea52710-fbdc-40e2-b06c-1dfc2c5f96f5",
         "Categories":  [
                            "Advanced",
                            "Examples"
@@ -57,6 +61,7 @@
         "Description":  "Using Linq with Python to get mobiles with a bunch of conditions...",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "6948acd1-bf85-4231-852c-5d6bd4a792cb",
         "Categories":  [
                            "Advanced",
                            "Examples"
@@ -71,6 +76,7 @@
         "Description":  "Add a packet wait entry to play a sound when trade window is opened",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "f8c255db-e009-4021-98e0-d002ae0f65af",
         "Categories":  [
                            "Advanced",
                            "Examples"
@@ -85,6 +91,7 @@
         "Description":  "Use gump parser to extract hp / maxhp from animal lore gump",
         "Author":  "Reetus",
         "Shard":  "OSI",
+        "Id":  "68920b44-2012-4791-8c41-be114fb54f82",
         "Categories":  [
                            "Advanced",
                            "Gumps"
@@ -99,6 +106,7 @@
         "Description":  "Run without waiting for movement accepted packets to speed up movement",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "b79b0b63-d4f7-4a4c-96ed-d805356ecd03",
         "Categories":  [
                            "Advanced",
                            "Movement"
@@ -113,6 +121,7 @@
         "Description":  "Automate Sampire build to cast proper abilities, move, loot and e.t.c",
         "Author":  "Mordor",
         "Era":  "TOL",
+        "Id":  "eedcb7c8-014d-41b8-b630-3a869375b52d",
         "Categories":  [
                            "Advanced",
                            "Sampire"
@@ -127,6 +136,7 @@
         "Description":  "Checks all items for durability and show alerts",
         "Author":  "Mordor",
         "Era":  "AOS",
+        "Id":  "d5bb848c-031f-4c91-ada0-8eaee74d4096",
         "Categories":  "Common",
         "FileName":  "Common\\check_durability.py",
         "Size":  1409,
@@ -138,6 +148,7 @@
         "Description":  "Use as a background macro to refresh health bars",
         "Author":  "Reetus",
         "Shard":  "OSI",
+        "Id":  "25f53ed6-a8da-4ca2-80fc-dc9e8205150d",
         "Categories":  "Common",
         "FileName":  "Common\\mobile_query.py",
         "Size":  455,
@@ -149,6 +160,7 @@
         "Description":  "Use runic atlas (3 or 4) with 48 runes on each, 1 hatchet, full LRC suit",
         "Author":  "ziox-b (inspired by \"Cray\" script)",
         "Shard":  "UO Heritage",
+        "Id":  "876af5df-bc1f-43e6-ba2e-f5e4c8ae6f66",
         "Categories":  "Crafting",
         "FileName":  "Crafting\\HUO-Lumberjacker.py",
         "Size":  2494,
@@ -160,6 +172,7 @@
         "Description":  "Crafts selected potions up to selected amounts",
         "Author":  "Kakagriss",
         "Shard":  "UOG-Demise",
+        "Id":  "b9b4d4a6-969e-450d-b2d1-f261bbaea91c",
         "Categories":  "Crafting",
         "FileName":  "Crafting\\potionmaker.py",
         "Size":  7062,
@@ -171,6 +184,7 @@
         "Description":  "Crafts the selected potion up to the selected maximum amount",
         "Author":  "Reetus",
         "Shard":  "UO Heritage",
+        "Id":  "644c7954-1d84-44b5-ae2e-451b93d126dc",
         "Categories":  [
                            "Crafting",
                            "Alchemy"
@@ -185,6 +199,7 @@
         "Description":  "Search and add items corresponding to prompted deed. Gumps for deed may vary in different shards.",
         "Author":  "Aru",
         "Era":  "AOS",
+        "Id":  "8933637a-ccc6-4685-833f-20b782b0781e",
         "Categories":  [
                            "Crafting",
                            "Blacksmith"
@@ -199,6 +214,7 @@
         "Description":  "Search and smelt all items (by type) from backpack. Uses prompt for get item type. Change {hammer_name} to current name in shard of hammer. Gumps may vary in other shards.",
         "Author":  "Aru",
         "Era":  "AOS",
+        "Id":  "8810665a-f70f-4f4e-9619-c52d2170afff",
         "Categories":  [
                            "Crafting",
                            "Blacksmith"
@@ -213,6 +229,7 @@
         "Description":  "Smelt ore from a container and put ingots into container",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "4c0fc800-b97f-4f1f-b264-d24356460e0c",
         "Categories":  [
                            "Crafting",
                            "Mining"
@@ -227,6 +244,7 @@
         "Description":  "Boat control UI like UO rudder for navigating around in a boat, with old text commands (not latest OSI drive-by-mouse)",
         "Author":  "Reetus",
         "Era":  "UOR",
+        "Id":  "0e1636a6-5371-406f-b4ab-e6bac964e8fa",
         "Categories":  "Misc",
         "FileName":  "Misc\\boatcontrolui.py",
         "Size":  3847,
@@ -238,6 +256,7 @@
         "Description":  "Auto bandage pets",
         "Author":  " qk",
         "Era":  "Any",
+        "Id":  "e5d97da5-ba81-4cf9-b9a6-64c185e88ecc",
         "Categories":  "PVM",
         "FileName":  "PVM\\bandage_pets.py",
         "Size":  6299,
@@ -249,6 +268,7 @@
         "Description":  "Unattended cave mining",
         "Author":  "Batt11",
         "Shard":  "Dark Forest",
+        "Id":  "b38963fe-0764-4218-afab-0c55bd196451",
         "Categories":  "Resource Gathering",
         "FileName":  "Resource Gathering\\autominer.py",
         "Size":  3234,
@@ -260,6 +280,7 @@
         "Description":  "Chops down trees recalling through given runebooks.",
         "Author":  "Kakagriss",
         "Shard":  "UOG-Demise",
+        "Id":  "3f62853c-b7b8-4a63-841f-851c7df15cc6",
         "Categories":  "Resources",
         "FileName":  "Resources\\recalllumber.py",
         "Size":  3122,
@@ -271,6 +292,7 @@
         "Description":  "Mines ore recalling through given runebooks. Read instructions",
         "Author":  "Kakagriss",
         "Shard":  "UOG-Demise",
+        "Id":  "ace477c0-2e4b-4260-ae00-78dabbb8299a",
         "Categories":  "Resources",
         "FileName":  "Resources\\recallminer.py",
         "Size":  4365,
@@ -282,6 +304,7 @@
         "Description":  "Tames nearby animals to train Animal Taming to GM (to 90 by default) with healing, killing and basic pathfinding",
         "Author":  "Mordor",
         "Era":  "Any",
+        "Id":  "f315487a-dd9e-42d4-8843-8d0c315acd5d",
         "Categories":  [
                            "Skills",
                            "Animal Taming"
@@ -296,6 +319,7 @@
         "Description":  "Uses Animal Taming master ability on target to train Animal Taming from 90 to cap",
         "Author":  "Mordor",
         "Era":  "TOL",
+        "Id":  "f27771c2-4cc0-48a9-a720-8d9060ce4ef5",
         "Categories":  [
                            "Skills",
                            "Animal Taming"
@@ -310,6 +334,7 @@
         "Description":  "Uses the Discordance skill on the player to train Discordance to GM",
         "Author":  "Mordor",
         "Era":  "Any",
+        "Id":  "e745e6a1-f84d-4eb8-b6b9-540ab41d42e0",
         "Categories":  [
                            "Skills",
                            "Discordance"
@@ -324,6 +349,7 @@
         "Description":  "Uses Reactive Armor to train Evaluating Intelligence to the cap",
         "Author":  "Mordor",
         "Era":  "Any",
+        "Id":  "bf2ff74d-0d22-4cfd-8339-843ffa4c66d9",
         "Categories":  [
                            "Skills",
                            "Evaluating Intelligence"
@@ -338,6 +364,7 @@
         "Description":  "A simple to use healing trainer that uses magic arrow to damage yourself then heal use bandages",
         "Author":  "vertex101",
         "Era":  "Any",
+        "Id":  "77360028-31cf-4eea-8be0-73c66fc0227f",
         "Categories":  [
                            "Skills",
                            "Healing"
@@ -352,6 +379,7 @@
         "Description":  "Train Magery to cap",
         "Author":  "Mordor",
         "Era":  "Any",
+        "Id":  "6b22f6bf-d4cf-4aed-abd5-171f34817508",
         "Categories":  [
                            "Skills",
                            "Magery"
@@ -366,6 +394,7 @@
         "Description":  "Train Mysticism to cap",
         "Author":  "Mordor",
         "Era":  "TOL",
+        "Id":  "b7e1f6a5-04a9-4609-96ca-f692bbd2318c",
         "Categories":  [
                            "Skills",
                            "Mysticism"
@@ -380,6 +409,7 @@
         "Description":  "Uses the Peacemaking skill on the player to train Peacemaking to GM",
         "Author":  "Mordor",
         "Era":  "Any",
+        "Id":  "8702cfa1-428f-4cc0-8584-4279d79061dd",
         "Categories":  [
                            "Skills",
                            "Peacemaking"
@@ -394,6 +424,7 @@
         "Description":  "Uses the Provocation skill on the player to train Provocation to GM",
         "Author":  "Mordor",
         "Era":  "Any",
+        "Id":  "44bb2489-05b0-4859-8ae4-b051e9882389",
         "Categories":  [
                            "Skills",
                            "Provocation"
@@ -408,6 +439,7 @@
         "Description":  "A simple miner i have made that mines until a certain weight is met then just recalls to the blacksmith area in luna to smelt the ore and bank then the script stops and will start when i make it back the my mining area",
         "Author":  "HellForge",
         "Era":  "Any",
+        "Id":  "adc4676e-63ed-43f4-bfd7-300ab67002be",
         "Categories":  "Skills Crafting",
         "FileName":  "Skills Crafting\\simpleminer.py",
         "Size":  484,
@@ -419,6 +451,7 @@
         "Description":  "Combine multiple stacks of the same item id into one (or more) stacks of 60000",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "20fc30c1-785e-4b7d-ac6e-2a88c0cb840d",
         "Categories":  "Utility",
         "FileName":  "Utility\\combinestacks.py",
         "Size":  1278,
@@ -430,6 +463,7 @@
         "Description":  "Buys everything in your active AutoBuy agent and goes through given runebooks. Read instructions.",
         "Author":  "Kakagriss",
         "Shard":  "UOG-Demise",
+        "Id":  "103bc44d-4ca2-4bed-9ccd-5f49d1a935ef",
         "Categories":  "Utility",
         "FileName":  "Utility\\recallbuyer.py",
         "Size":  4593,
@@ -441,6 +475,7 @@
         "Description":  "An example showing sending a custom mobile update packet to the client with a specified Z level",
         "Author":  "Reetus",
         "Era":  "Any",
+        "Id":  "b5dc4d54-531d-4326-8a2c-5a39e3e1b051",
         "Categories":  "Utility",
         "FileName":  "Utility\\setz.py",
         "Size":  444,
