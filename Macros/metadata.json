@@ -483,6 +483,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9188735+00:00"
     },
     {
+        "Name":  "Runebook Cloner",
+        "Description":  "Clones given runebook in one or more blank books.",
+        "Author":  "Kakagriss",
+        "Shard":  "UOG-Demise",
+        "Id":  "103bc44d-4ca2-4bed-9ccd-5f49d1a935ef",
+        "Categories":  "Utility",
+        "FileName":  "Utility\\runebookcloner.py",
+        "Size":  3593,
+        "SHA1":  "B57652AC48A691C414FFC0F78024757C1911FFD4",
+        "ModifiedDate":  "2022-03-06T01:05:07.9188735+00:00"
+    },
+    {
         "Name":  "Set Z",
         "Description":  "An example showing sending a custom mobile update packet to the client with a specified Z level",
         "Author":  "Reetus",
