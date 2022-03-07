@@ -288,6 +288,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9118728+00:00"
     },
     {
+        "Name":  "Leather gatherer",
+        "Description":  "Gathers leather from corpses next to you. Read instructions.",
+        "Author":  "Kakagriss",
+        "Shard":  "UOG-Demise",
+        "Id":  "b38963fe-0764-4218-afab-0c55bd196451",
+        "Categories":  "Resources",
+        "FileName":  "Resources\\leathergatherer.py",
+        "Size":  1778,
+        "SHA1":  "9C6FF5786B516A76872CB54BD5EC89D6C10FD342",
+        "ModifiedDate":  "2022-03-06T01:05:07.9118728+00:00"
+    },
+    {
         "Name":  "Recall Lumber",
         "Description":  "Chops down trees recalling through given runebooks.",
         "Author":  "Kakagriss",
