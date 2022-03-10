@@ -19,6 +19,13 @@ textColor = 43
 errorTextColor = 33
 debugTextColor = 16
 
+# ****PAUSES*****
+shortPause = 500
+mediumPause = 1000
+longPause = 1500
+gumpTimeout = 5000
+targetTimeout = 5000
+
 # *****GUMPS*****
 tailorGump 	= 0x38920abd
 tinkerGump 	= 0x38920abd
@@ -86,12 +93,17 @@ if not FindAlias('tailor bod trash'):
   	PromptAlias('tailor bod trash')
   	
 msg = "OK, now for a few tips.\n\nThere are some settings at the top of the macro that you can adjust.  These " \
-      "include things like text colors for different messaging, whether or not to make Bone armor, etc."
+      "include things like text colors for different messaging, length of pauses, whether or not to make Bone armor, etc."
       
 if UseHelp: ConfirmPrompt(msg)
 
 msg = "There is a debug mode that you can turn on (another setting at top) to provide verbose messaging.  This would be " \
 	  "useful to understand the flow of the method calls or help if you are modifying the script and are actually debugging"
+	  
+if UseHelp: ConfirmPrompt(msg)
+
+msg = "The amount of materials to pull into your pack is a setting on the material types found around lines 152-158. " \
+	  "You can adjust this as desired depending on how heavy your server makes these materials so you don't overfill your pack."
 
 if UseHelp: ConfirmPrompt(msg)
 
@@ -138,12 +150,12 @@ class Material:
 # FORMAT: Material(graphic, name, hue, minPackAmt, restockAmt)
 # *************************
 Ingots 	= Material(0x1bf2, "ingots", 0, 2, 50)
-Cloth 	= Material(0x1766, "cloth", -1, 20, 500)
-Leather = Material(0x1081, "leather", 0, 20, 500)
-Spined 	= Material(0x1081, "spined leather", 2220, 20, 500)
-Horned 	= Material(0x1081, "horned leather", 2117, 20, 500)
-Barbed 	= Material(0x1081, "barbed leather", 2129, 20, 500)
-Bone 	= Material(0xf7e,  "bone", 0, 10, 200)
+Cloth 	= Material(0x1766, "cloth", -1, 20, 200)
+Leather = Material(0x1081, "leather", 0, 20, 200)
+Spined 	= Material(0x1081, "spined leather", 2220, 20, 200)
+Horned 	= Material(0x1081, "horned leather", 2117, 20, 200)
+Barbed 	= Material(0x1081, "barbed leather", 2129, 20, 200)
+Bone 	= Material(0xf7e,  "bone", 0, 10, 100)
 
 
 # *************************
@@ -257,7 +269,7 @@ class BOD:
 	def OpenGump(self):
 		if DEBUG: SysMessage("[debug]:In BOD.OpenGump", debugTextColor)
 		UseObject(self.id)
-		WaitForGump(BOD.Gump, 5000)
+		WaitForGump(BOD.Gump, gumpTimeout)
 		if not GumpExists(BOD.Gump):
 			SysMessage("Looking for BOD Gump and not found", errorTextColor)
 			return False
@@ -372,12 +384,12 @@ class BOD:
 	def SetCombineOption(self):
 		if not GumpExists(BOD.Gump):
 			UseObject(self.id)
-			WaitForGump(BODGump, 5000)
+			WaitForGump(BODGump, gumpTimeout)
 
 		# Select the "combine" option to target items as they are made
 		ReplyGump(BOD.Gump, BOD.GumpCombineResponse)
-		WaitForGump(BOD.Gump, 5000)
-		WaitForTarget(5000)
+		WaitForGump(BOD.Gump, gumpTimeout)
+		WaitForTarget(targetTimeout)
 
 # *************************
 # ******  FUNCTIONS  ******
@@ -426,9 +438,9 @@ def RefillMaterial(material):
 				elif material == Barbed: Material.SetMaterialOut("barbed")
 				elif material == Bone: Material.SetMaterialOut("bone")
 		else:
-			Pause(500)
+			Pause(shortPause)
 			MoveType(material.graphic, container, "backpack", -1, -1, -1, material.hue, material.restockAmt)
-			Pause(1500)
+			Pause(longPause)
 
 
 
@@ -455,9 +467,9 @@ def SetLeatherType(bod):
 
 	kit = GetSewingKit()
 	UseObject(kit)
-	WaitForGump(tailorGump, 5000)
+	WaitForGump(tailorGump, gumpTimeout)
 	ReplyGump(tailorGump, tailorMaterialResponse)
-	WaitForGump(tailorGump, 5000)
+	WaitForGump(tailorGump, gumpTimeout)
 	if bod.material == Leather: ReplyGump(tailorGump, tailorLeatherResponse)
 	elif bod.material == Spined: ReplyGump(tailorGump, tailorSpinedResposne)
 	elif bod.material == Horned: ReplyGump(tailorGump, tailorHornedResponse)
@@ -477,11 +489,11 @@ def CraftTinkerItem(item):
 
 	RefillMaterial(Ingots)
 	UseType(TinkerTool.graphic)
-	WaitForGump(tinkerGump, 5000)
+	WaitForGump(tinkerGump, gumpTimeout)
 	ReplyGump(tinkerGump, item.gumpResponse1)
-	WaitForGump(tinkerGump, 5000)
+	WaitForGump(tinkerGump, gumpTimeout)
 	ReplyGump(tinkerGump, item.gumpResponse2)
-	Pause(1500)		
+	Pause(longPause)		
 
 
 def GetScissors():
@@ -500,7 +512,7 @@ def GetSewingKit():
 			CraftTinkerItem(SewingKit)
 		else:
 			MoveType(SewingKit.graphic, container, "backpack", -1, -1, -1, SewingKit.defaultHue)
-			Pause(1500)
+			Pause(longPause)
 	if FindType(SewingKit.graphic, 1, "backpack", SewingKit.defaultHue):		
 		return GetAlias("found")
 	else:
@@ -512,32 +524,32 @@ def CraftTailorItem(item):
 	if DEBUG: SysMessage("[debug]:In CraftTailorItem", debugTextColor)
 	kit = GetSewingKit()
 	UseObject(kit)
-	WaitForGump(tailorGump, 5000)
+	WaitForGump(tailorGump, gumpTimeout)
 	ReplyGump(tailorGump, item.gumpResponse1)
-	WaitForGump(tailorGump, 5000)
+	WaitForGump(tailorGump, gumpTimeout)
 	ReplyGump(tailorGump, item.gumpResponse2)
-	WaitForGump(tailorGump, 5000)
-	Pause(500)
+	WaitForGump(tailorGump, gumpTimeout)
+	Pause(shortPause)
 	while FindType(item.graphic, 1, "backpack"):
 		craftedItem = GetAlias("found")
 		Target(craftedItem)
 		WaitForTarget(2000)
 		if not TargetExists() and InJournal("must be exceptional"):
 			myScissors = GetScissors()
-			Pause(500)
+			Pause(shortPause)
 			UseObject(myScissors)
-			WaitForTarget(5000)
+			WaitForTarget(targetTimeout)
 			Target(craftedItem)
 			Pause(300)
 			if InJournal("Scissors cannot be used"):
-				Pause(500)
+				Pause(shortPause)
 				MoveItem(craftedItem, GetAlias("tailor bod trash"))
 				ClearJournal()
 			# Bring back the target cursor
-			Pause(500)
+			Pause(shortPause)
 			ReplyGump(BOD.Gump, BOD.GumpCombineResponse)
-			WaitForGump(BOD.Gump, 5000)
-			WaitForTarget(5000)
+			WaitForGump(BOD.Gump, gumpTimeout)
+			WaitForTarget(targetTimeout)
 			ClearJournal()
 
 
@@ -552,13 +564,13 @@ def BookDeedsRemaining():
 		# with the filter have none to pull from book therefore
 		# cannot use the book property for 'Deeds Remaining:'
 		ClearJournal()
-		Pause(500)
+		Pause(shortPause)
 		UseObject(bodBook)	
 		if InJournal("The book is empty"):
 			return False
 		else:
 			WaitForGump(BODBookGump, 2000)
-			Pause(1000)
+			Pause(mediumPause)
 			if GumpExists(BODBookGump) and InGump(BODBookGump, "Small"):
 				return True
 	else:
@@ -593,24 +605,29 @@ def Main():
 						SysMessage("[debug]:Out of Horned: " + str(Material.outOfHorned), debugTextColor)
 						SysMessage("[debug]:Out of Barbed: " + str(Material.outOfBarbed), debugTextColor)
 						SysMessage("[debug]:Out of Bone: " + str(Material.outOfBone), debugTextColor)
-				# BOD is complete, move to destination book
-				SysMessage("BOD is complete", textColor)
+
+
 				if bod.completed == bod.amount or not TargetExists():
+					# BOD is complete, move to destination book
+					SysMessage("BOD is complete", textColor)
 					ReplyGump(BOD.Gump, 0) # Close
 					destination = GetAlias('tailor bod destination')
-					Pause(1000)
+					Pause(mediumPause)
 					MoveItem(bod.id, destination)
 					bod = None
-					Pause(500)
+					Pause(shortPause)
 					UnloadMaterials(True)
-					Pause(500)
+					Pause(shortPause)
 			else:
 				if DEBUG: SysMessage("[debug]:Moving deed to uncompletable book", debugTextColor)
 				# Move to incompletable book
+				SysMessage("NOT doing this BOD", textColor)
 				uncompletableBook = GetAlias('tailor uncompletable bod book')
-				Pause(1000)
+				Pause(mediumPause)
 				MoveItem(bod.id, uncompletableBook)
-				Pause(500)
+				Pause(shortPause)
+				UnloadMaterials(True)
+				Pause(shortPause)
 
 		# Get A BOD out of the book
 		else:
@@ -618,9 +635,9 @@ def Main():
 			SysMessage("Getting a new BOD", textColor)
 			bodBook = GetAlias("tailor bod source")
 			UseObject(bodBook)
-			WaitForGump(BODBookGump, 5000)
+			WaitForGump(BODBookGump, gumpTimeout)
 			ReplyGump(BODBookGump, 5)
-			Pause(1500)
+			Pause(longPause)
 
 	UnloadMaterials(False)
 	# Close Gumps
