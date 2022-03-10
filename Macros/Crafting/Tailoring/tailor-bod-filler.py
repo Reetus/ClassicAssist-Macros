@@ -4,7 +4,7 @@ from Assistant import Engine
 # ****************************************
 # To turn off/on the ingame help prompts *
 # ****************************************
-UseHelp = False
+UseHelp = True
 DEBUG = False
 # ****************************************
 SetQuietMode(not(DEBUG))
@@ -39,7 +39,7 @@ msg = "Welcome to the Tailor BOD Filler macro.  This macro " \
 	  "of any leather type.  Let's get started!"
 if UseHelp: ConfirmPrompt(msg)
 
-msg = "First we will want to know what BOD book you want to pull BODs " \
+msg = "We will want to know what BOD book you want to pull BODs " \
       "out of to fill.\n\nBe sure to set the filter on the book to the " \
       "specific type of BODs you want to fill here. AT A MINIMUM, you will " \
       "want to ensure you have selected Tailoring and Small BODs."
@@ -48,13 +48,23 @@ if not FindAlias('tailor bod source'):
 	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor bod source')
 
-msg = "Second, you will need to select a different book to hold the completed " \
+msg = "You will now need to select a different book to hold the completed " \
       "BODs you fill.  Make sure the book has plenty of room to hold all the " \
-      "BODs. I'm not handling you screwing that up in the macro." 
+      "BODs." 
       
 if not FindAlias('tailor bod destination'):
 	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor bod destination')
+  	
+msg = "This choice is a book for BODs that cannot be filled. " \
+	  "For instance, you may have run out of leather and " \
+	  "still have plenty of cloth in your restock chest. " \
+	  "The Macro could continue to complete the remaining cloth BODs, " \
+	  "but would stash all the incompletable leather BODs in this book."
+	  
+if not FindAlias('tailor uncompletable bod book'):
+	if UseHelp: ConfirmPrompt(msg)
+  	PromptAlias('tailor uncompletable bod book')
 
 msg = "Next, you need to select a container that will serve as your restock " \
       "target.  In this container, you will want plenty of materials, such as cut cloth, " \
@@ -68,23 +78,24 @@ if not FindAlias('tailor restock container'):
 	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor restock container')
 
-msg = "Finally, this last choice is a book for BODs that cannot be filled. " \
-	  "For instance, you may have run out of leather and " \
-	  "still have plenty of cloth in your restock chest. " \
-	  "The Macro could continue to complete the remaining cloth BODs, " \
-	  "but would stash all the incompletable leather BODs in this book."
-	  
-if not FindAlias('tailor uncompletable bod book'):
-	if UseHelp: ConfirmPrompt(msg)
-  	PromptAlias('tailor uncompletable bod book')
 
-msg = "Trash container for failed Bone armor attempts as they cannot be recycled"
+msg = "The next prompt is for a Trash container for failed Bone armor or Footwear attempts as they cannot be recycled."
 
 if not FindAlias('tailor bod trash'):
 	if UseHelp: ConfirmPrompt(msg)
   	PromptAlias('tailor bod trash')
+  	
+msg = "OK, now for a few tips.\n\nThere are some settings at the top of the macro that you can adjust.  These " \
+      "include things like text colors for different messaging, whether or not to make Bone armor, etc."
+      
+if UseHelp: ConfirmPrompt(msg)
 
-msg = "You are all set! \nOne final note, if you prefer to not see these prompts " \
+msg = "There is a debug mode that you can turn on (another setting at top) to provide verbose messaging.  This would be " \
+	  "useful to understand the flow of the method calls or help if you are modifying the script and are actually debugging"
+
+if UseHelp: ConfirmPrompt(msg)
+
+msg = "You are all set! \n\nOne final note, if you prefer to not see these prompts " \
 	  "anymore, set the 'UseHelp' variable at the top of the macro to 'False'" \
 
 if UseHelp: ConfirmPrompt(msg)
@@ -585,7 +596,7 @@ def Main():
 				# BOD is complete, move to destination book
 				SysMessage("BOD is complete", textColor)
 				if bod.completed == bod.amount or not TargetExists():
-					ReplyGump(BOD.Gump. 0) #Close
+					ReplyGump(BOD.Gump, 0) # Close
 					destination = GetAlias('tailor bod destination')
 					Pause(1000)
 					MoveItem(bod.id, destination)
@@ -603,7 +614,7 @@ def Main():
 
 		# Get A BOD out of the book
 		else:
-			ReplyGump(BODBookGump, 0) # Close
+			ReplyGump(BODBookGump, 0) 
 			SysMessage("Getting a new BOD", textColor)
 			bodBook = GetAlias("tailor bod source")
 			UseObject(bodBook)
@@ -612,6 +623,11 @@ def Main():
 			Pause(1500)
 
 	UnloadMaterials(False)
+	# Close Gumps
+	ReplyGump(BODBookGump, 0)
+	ReplyGump(BOD.Gump, 0)
+	ReplyGump(tailorGump, 0)
+	# End Macro
 	SysMessage("NO BODS TO FILL", textColor)
 	CancelTarget()
 	Stop()
