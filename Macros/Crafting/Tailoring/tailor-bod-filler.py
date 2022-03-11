@@ -1,5 +1,10 @@
-from Assistant import Engine
+# Name: Tailor BOD Filler
+# Description: This will fill all BODs from a Source BOD Book.
+# Author: raveX
+# Era: Any
+# Servers: ServUO and RunUO tested
 
+from Assistant import Engine
 
 # ****************************************
 # To turn off/on the ingame help prompts *
