@@ -1,4 +1,4 @@
-# Name: Tailor BOD Filler
+# Name: Tailor Bod Filler
 # Description: This will fill all BODs from a Source BOD Book.
 # Author: raveX
 # Era: Any
