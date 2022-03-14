@@ -252,14 +252,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9098735+00:00"
     },
     {
+        "Name":  "Tailor Bod Filler",
+        "Description":  "This will fill all BODs from a Source BOD Book.",
+        "Author":  "raveX",
+        "Era":  "Any",
         "Id":  "4c0fc800-b97f-4f1f-b264-d24356460e0c",
         "Categories":  [
                            "Crafting",
                            "Tailoring"
                        ],
         "FileName":  "Crafting\\Tailoring\\tailor-bod-filler.py",
-        "Size":  24705,
-        "SHA1":  "6C5C5D2B2BE747CB1D93928159738156EE2AAD60",
+        "Size":  24861,
+        "SHA1":  "EBCB014280AE8F53FDEC34ACFD46910117372234",
         "ModifiedDate":  "2022-03-06T01:05:07.9098735+00:00"
     },
     {
