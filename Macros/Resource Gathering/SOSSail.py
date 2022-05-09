@@ -20,18 +20,22 @@ clr.ImportExtensions(System.Linq)
 from System import Uri, TimeSpan, Enum
 from System.Windows import Window, ResourceDictionary
 from System.Windows.Markup import XamlReader
+from System.Windows.Shapes import Ellipse, Line
+from System.Windows.Media import ImageBrush, Brushes
+from System.Windows.Controls import ToolTip, Canvas
 from System.Threading import Thread, ThreadStart, ApartmentState
 from System import Array, Byte
 from System.Windows.Media import PixelFormats
 from System.Windows.Media.Imaging import BitmapSource
 from System.Windows.Threading import DispatcherTimer
 
+
 SetQuietMode(True)
 
 global SOSType
 global PoleType
 global MonsterTypes
-global SOSContainerTypes
+global SOSChestTypes
 
 SOSType = 0x14EE
 PoleType = 0x0DC0
@@ -69,17 +73,36 @@ RuneTypes = [0x1F14,0x100F]
 global ShipRuneNames
 ShipRuneNames = ["Ship Recall Rune", "a ship key"]
 
-
 xaml ="""
 	<StackPanel Orientation="Horizontal"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	>
-		<Image
-			VerticalAlignment="Top"
-			Name="map"
-			Width="320"
-			Height="256" />
+		<Grid>
+			<Canvas
+				VerticalAlignment="Top"
+				Name="canvas"
+				Width="320"
+				Height="256">
+				<Canvas.Background>
+					<ImageBrush x:Name="map"/>
+				</Canvas.Background>
+			</Canvas>
+			<Canvas
+				IsHitTestVisible="False"
+				VerticalAlignment="Top"
+				Name="lineCanvas"
+				Width="320"
+				Height="256">
+			</Canvas>
+			<Canvas
+				IsHitTestVisible="False"
+				VerticalAlignment="Top"
+				Name="routeCanvas"
+				Width="320"
+				Height="256">
+			</Canvas>
+		</Grid>
 		<DockPanel LastChildFill="True">
 			<StackPanel DockPanel.Dock="Top">
 				<Button Content="Load SOS from all container" Name="LoadAll"/>
@@ -95,9 +118,7 @@ xaml ="""
 				<Button Content="Goto ship" Name="Recall"/>
 				<Button Content="Recalc route" Name="Recalc"/>
 				<Button Content="Sail to next SOS" Name="MoveNext"/>
-				<Button Content="Stop sail" Name="StopSail"/>
 				<CheckBox Name="CheckFishing" Content="Fishing when arrived" IsChecked="True" />
-				<!--<Button Content="Debug" Name="DebugButton" Visibility="Collapsed" />-->
 				<Button Content="Debug" Name="DebugButton" />
 			</StackPanel>
 			<TextBlock Name="MsgBox" Background="White" />
@@ -113,6 +134,29 @@ class SOS:
 		self.Owner = owner
 		self.MapX = x / 16
 		self.MapY = y / 16
+		e = Ellipse()
+		e.Width = 5
+		e.Height = 5
+		if owner == "backpack":
+			e.Fill = Brushes.Red
+			e.Stroke = Brushes.Red
+		else:
+			e.Fill = Brushes.Yellow
+			e.Stroke = Brushes.Yellow
+		e.ToolTip = ToolTip()
+		e.ToolTip.Content = "({}, {})".format(x, y)
+		Canvas.SetLeft(e, self.MapX - e.Width / 2)
+		Canvas.SetTop(e, self.MapY - e.Height / 2)
+		self.ellipse = e
+	def SetOwner(self, owner):
+		self.Owner = owner
+		if owner == "backpack":
+			self.ellipse.Fill = Brushes.Red
+			self.ellipse.Stroke = Brushes.Red
+		else:
+			self.ellipse.Fill = Brushes.Yellow
+			self.ellipse.Stroke = Brushes.Yellow
+		return		
 
 class Tile:
 	def __init__(self, x, y, parent = None, cost = 0):
@@ -122,17 +166,8 @@ class Tile:
 		self.Parent = parent
 		self.Distance = 0
 	def SetDistance(self, targetX, targetY):
-		self.Distance = (self.X - targetX) ** 2 + (self.Y - targetY) ** 2
+		self.Distance = (abs(self.X - targetX) + abs(self.Y - targetY)) * 10
 		self.CostDistance = self.Cost + self.Distance
-
-def Recall(target):
-	Cast("Recall")
-	if WaitForTargetOrFizzle(5000):
-		Target(target)
-		fcr = FasterCastRecovery()
-		Pause((6 - fcr) / 4 * 1000)
-		return True
-	return False
 
 def KillMonsterWithMagery():
 	find = False
@@ -184,14 +219,14 @@ def FindShip():
 
 def GetWalkableTiles(map, currentTile, targetTile):
 	possibleTiles = [
-		Tile(currentTile.X - 1, currentTile.Y - 1, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X - 1, currentTile.Y, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X - 1, currentTile.Y + 1, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X + 1, currentTile.Y - 1, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X + 1, currentTile.Y, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X + 1, currentTile.Y + 1, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X, currentTile.Y - 1, currentTile, currentTile.Cost + 1),
-		Tile(currentTile.X, currentTile.Y + 1, currentTile, currentTile.Cost + 1),
+		Tile(currentTile.X - 1, currentTile.Y - 1, currentTile, currentTile.Cost + 14),
+		Tile(currentTile.X - 1, currentTile.Y, currentTile, currentTile.Cost + 10),
+		Tile(currentTile.X - 1, currentTile.Y + 1, currentTile, currentTile.Cost + 14),
+		Tile(currentTile.X + 1, currentTile.Y - 1, currentTile, currentTile.Cost + 14),
+		Tile(currentTile.X + 1, currentTile.Y, currentTile, currentTile.Cost + 10),
+		Tile(currentTile.X + 1, currentTile.Y + 1, currentTile, currentTile.Cost + 14),
+		Tile(currentTile.X, currentTile.Y - 1, currentTile, currentTile.Cost + 10),
+		Tile(currentTile.X, currentTile.Y + 1, currentTile, currentTile.Cost + 10),
 	]
 
 	ret = []
@@ -395,14 +430,18 @@ class XamlWindow(Window):
 			("Recall", self.ClickRecall),
 			("Recalc", self.ClickRecalc),
 			("MoveNext", self.ClickMoveNext),
-			("StopSail", self.ClickStop),
 			("DebugButton", self.ClickDebug),
 		]
 		
 		for i in self.events:
 			btn = self.Content.FindName(i[0])
 			btn.Click += i[1]
+		self.sailBtn = self.Content.FindName("MoveNext")
+
 		self.map = self.Content.FindName("map")
+		self.canvas = self.Content.FindName("canvas")
+		self.lineCanvas = self.Content.FindName("lineCanvas")
+		self.routeCanvas = self.Content.FindName("routeCanvas")
 		self.SOSMoveCount = self.Content.FindName("MoveCount")
 		self.CheckFishing = self.Content.FindName("CheckFishing")
 		self.timer = DispatcherTimer()
@@ -419,8 +458,98 @@ class XamlWindow(Window):
 		self.SailDir = ""
 		
 		self.MovingCnt = 0
+		
+		self.TraBitmap = self.CreateBitmapSource(traTile)
+		self.FelBitmap = self.CreateBitmapSource(felTile)
+		self.ChangeBackgroudImage()
 
+		self.CharHorizonLine = Line()
+		self.CharHorizonLine.Stroke = Brushes.Black
+		self.CharHorizonLine.StrokeThickness = 1
+		self.lineCanvas.Children.Add(self.CharHorizonLine)
+		self.CharVerticalLine = Line()
+		self.CharVerticalLine.Stroke = Brushes.Black
+		self.CharVerticalLine.StrokeThickness = 1
+		self.lineCanvas.Children.Add(self.CharVerticalLine)
+		self.SOSHorizonLine = Line()
+		self.SOSHorizonLine.Stroke = Brushes.White
+		self.SOSHorizonLine.StrokeThickness = 1
+		self.lineCanvas.Children.Add(self.SOSHorizonLine)
+		self.SOSVerticalLine = Line()
+		self.SOSVerticalLine.Stroke = Brushes.White
+		self.SOSVerticalLine.StrokeThickness = 1
+		self.lineCanvas.Children.Add(self.SOSVerticalLine)
 		return
+	
+	def CharMove(self):
+		if Engine.Player.Map == Map.Felucca or Engine.Player.Map == Map.Trammel:
+			self.CharHorizonLine.X1 = 0
+			self.CharHorizonLine.Y1 = Y("self") / 16
+			self.CharHorizonLine.X2 = width - 1
+			self.CharHorizonLine.Y2 = Y("self") / 16
+			self.CharVerticalLine.X1 = X("self") / 16
+			self.CharVerticalLine.Y1 = 0
+			self.CharVerticalLine.X2 = X("self") / 16
+			self.CharVerticalLine.Y2 = height - 1
+		else:
+			self.CharHorizonLine.X1 = 0
+			self.CharHorizonLine.Y1 = 0
+			self.CharHorizonLine.X2 = 0
+			self.CharHorizonLine.Y2 = 0
+			self.CharVerticalLine.X1 = 0
+			self.CharVerticalLine.Y1 = 0
+			self.CharVerticalLine.X2 = 0
+			self.CharVerticalLine.Y2 = 0
+		return
+	def ChangeCurrentSOS(self):
+		if self.CurrentSOS == None:
+			self.SOSHorizonLine.X1 = 0
+			self.SOSHorizonLine.Y1 = 0
+			self.SOSHorizonLine.X2 = 0
+			self.SOSHorizonLine.Y2 = 0
+			self.SOSVerticalLine.X1 = 0
+			self.SOSVerticalLine.Y1 = 0
+			self.SOSVerticalLine.X2 = 0
+			self.SOSVerticalLine.Y2 = 0
+		else:
+			self.SOSHorizonLine.X1 = 0
+			self.SOSHorizonLine.Y1 = self.CurrentSOS.MapY
+			self.SOSHorizonLine.X2 = width - 1
+			self.SOSHorizonLine.Y2 = self.CurrentSOS.MapY
+			self.SOSVerticalLine.X1 = self.CurrentSOS.MapX
+			self.SOSVerticalLine.Y1 = 0
+			self.SOSVerticalLine.X2 = self.CurrentSOS.MapX
+			self.SOSVerticalLine.Y2 = height - 1
+		return
+	def ChangeBackgroudImage(self):
+		if Engine.Player.Map == Map.Felucca:
+			self.map.ImageSource = self.FelBitmap
+		else:
+			self.map.ImageSource = self.TraBitmap
+	
+	def ResetCanvasChildren(self):
+		self.canvas.Children.Clear()
+		for sosInfo in self.SOSList:
+			self.canvas.Children.Add(sosInfo.ellipse)
+	
+	def CreateBitmapSource(self, tiles):
+		pixelFormat = PixelFormats.Bgr24
+		bitsPerPixel = 24
+		bytesPerPixel = (bitsPerPixel + 7) / 8
+		stride = bytesPerPixel * width
+		buffer = Array.CreateInstance(Byte, width * height * bytesPerPixel)
+		for y in range(height):
+			for x in range(width):
+				bufferIndex = (y * width + x) * bytesPerPixel
+				if tiles[x][y] == 1: #blue
+					buffer[bufferIndex + 0] = 255
+					buffer[bufferIndex + 1] = 0
+					buffer[bufferIndex + 2] = 0
+				else: #green
+					buffer[bufferIndex + 0] = 0
+					buffer[bufferIndex + 1] = 255
+					buffer[bufferIndex + 2] = 0
+		return BitmapSource.Create(width, height, 96, 96, pixelFormat, None, buffer, stride)
 	
 	def Sailing(self, shipDir, currentX, currentY):
 		if len(self.CurrentRail) == 0 or ( self.CurrentRail[0][0] == currentX / 16 and self.CurrentRail[0][0] == currentY / 16):
@@ -433,6 +562,12 @@ class XamlWindow(Window):
 		if shipDir == None:
 			self.State = None
 			return True
+
+		if self.State == "Fishing" or self.State == "Sail":
+			if self.sailBtn.Content != "Stop":
+				self.sailBtn.Content = "Stop"
+		elif self.sailBtn.Content != "Sail to next SOS":
+			self.sailBtn.Content = "Sail to next SOS"
 
 		self.SailDir = ""
 		if currentX < self.LastX:
@@ -467,6 +602,7 @@ class XamlWindow(Window):
 		
 		if len(targetDir) == 0:
 			self.CurrentRail.pop(0)
+			self.DrawRoute()
 			return False
 		#print("target {} : sailDir {}".format(targetDir, self.SailDir))
 		if targetDir == self.SailDir:
@@ -581,6 +717,19 @@ class XamlWindow(Window):
 			TargetTileOffsetResource(0, 0, 0)
 		SetTimer("FishingTimer", 0)
 		return
+	def DrawRoute(self):
+		self.routeCanvas.Children.Clear()
+		for rail in self.CurrentRail:
+			e = Ellipse()
+			e.Width = 1
+			e.Height = 1
+			e.Fill = Brushes.Magenta
+			e.Stroke = Brushes.Magenta
+			e.ToolTip = ToolTip()
+			Canvas.SetLeft(e, rail[0] / 16 - e.Width)
+			Canvas.SetTop(e, rail[1] /16 - e.Height)
+			self.ellipse = e
+			self.routeCanvas.Children.Add(e)
 
 	def tickhandler(self, sender, args):
 		if Engine.Player.Map != Map.Felucca and Engine.Player.Map != Map.Trammel:
@@ -597,12 +746,10 @@ class XamlWindow(Window):
 		currentX = X("self")
 		currentY = Y("self")
 		moved = False
-		moveCnt = False
 		needRedraw = False
 		
 		if (currentX != self.LastX or currentY != self.LastY):
 			moved = True
-			needRedraw = True
 			self.MovingCnt = 0
 		elif self.State == "Sail":
 			self.MovingCnt += 1
@@ -612,11 +759,11 @@ class XamlWindow(Window):
 		if (self.FacetTile != newTile):
 			self.FacetTile = newTile
 			needRedraw = True
-
 		
 		if self.CurrentSOS != None and not FindObject(self.CurrentSOS.Serial, 0, "backpack"):
+			self.canvas.Children.Remove(self.CurrentSOS.ellipse)
 			self.CurrentSOS = None
-		
+			self.ChangeCurrentSOS()
 		if self.State == "Fishing":
 			if self.Fishing() == False:
 				self.State = None
@@ -629,12 +776,12 @@ class XamlWindow(Window):
 				for sosInfo in self.SOSList:
 					if sosInfo.Owner != "backpack":
 						continue
-					if max(abs(closedSOS.X - currentX), abs(closedSOS.Y - currentY)) > max(abs(sosInfo.X - currentX), abs(sosInfo.Y - currentY)):
+					if (closedSOS.X - currentX) ** 2 + (closedSOS.Y - currentY) ** 2 > (sosInfo.X - currentX) ** 2 + (sosInfo.Y - currentY) ** 2:
 						closedSOS = sosInfo
 				sosChanged = False
 				if closedSOS.Owner == "backpack" and self.CurrentSOS != closedSOS:
 					self.CurrentSOS = closedSOS
-					needRedraw = True
+					self.ChangeCurrentSOS()
 					sosChanged = True
 				if len(self.CurrentRail) == 0 or sosChanged:
 					self.CurrentRail = SearchRoute(self.FacetTile, ((currentX) / 16, (currentY) / 16), (closedSOS.MapX, closedSOS.MapY))
@@ -644,12 +791,16 @@ class XamlWindow(Window):
 							self.MsgBoxUpdate("Goto deep sea")
 						else:
 							self.MsgBoxUpdate("can't find route")
+					self.DrawRoute()
 
 		self.LastX = currentX
 		self.LastY = currentY
-				
+
 		if needRedraw:
-			self.UpdateBitmap()
+			self.ChangeBackgroudImage()
+		if moved:
+			self.CharMove()
+
 		return
 		
 	def ButtonDisable(self):
@@ -681,7 +832,7 @@ class XamlWindow(Window):
 		FindSOS(self, None)
 		if FindShip() != None:
 			self.LastX = None
-		self.UpdateBitmap()
+		self.ResetCanvasChildren()
 		self.ButtonEnable()
 		return
 	def ClickLoadBackpack(self, sender, event):
@@ -691,13 +842,13 @@ class XamlWindow(Window):
 		FindSOS(self, GetAlias("backpack"))
 		if FindShip() != None:
 			self.LastX = None
-		self.UpdateBitmap()
+		self.ResetCanvasChildren()
 		self.ButtonEnable()
 		return
 	def ClickMoveSOS(self, sender, event):
 		self.ButtonDisable()
 		self.MsgBoxUpdate("Click Map")
-		self.map.MouseDown += self.MapMouseDown
+		self.canvas.MouseDown += self.MapMouseDown
 		return
 	def ClickRecall(self, sender, event):
 		rune = None
@@ -717,7 +868,7 @@ class XamlWindow(Window):
 			return
 		# TODO any other skill's spell
 		Cast("Recall")
-		if WaitForTarget(5000):
+		if WaitForTargetOrFizzle(5000):
 			Target(rune)
 			fcr = FasterCastRecovery()
 			Pause((6 - fcr) / 4 * 1000)
@@ -731,18 +882,18 @@ class XamlWindow(Window):
 			self.CurrentRail = []
 		return
 	def ClickMoveNext(self, sender, event):
-		self.State = "Sail"
-		self.MovingCnt = 0
+		if self.sailBtn.Content == "Sail to next SOS":
+			self.State = "Sail"
+			self.MovingCnt = 0
+		else:
+			self.State = None
+			self.MovingCnt = 0
+			Msg("Stop")
 		return
-	def ClickStop(self, sender, event):
-		self.State = None
-		self.MovingCnt = 0
-		Msg("Stop")
-		return	
 	def MapMouseDown(self, sender, event):
 		self.MsgBoxUpdate("")
-		self.map.MouseDown -= self.MapMouseDown
-		clicked = event.GetPosition(self.map)
+		self.canvas.MouseDown -= self.MapMouseDown
+		clicked = event.GetPosition(self.canvas)
 		print("Click on ({}, {})".format(clicked.X, clicked.Y))
 		moveCnt = (self.SOSMoveCount.SelectedIndex + 1 )* 10
 		sortedSOS = sorted(self.SOSList, key=lambda sos: max(abs(sos.MapX - clicked.X), abs(sos.MapY - clicked.Y)))
@@ -752,8 +903,7 @@ class XamlWindow(Window):
 			print("Move SOS ({}, {}), map({}, {})".format(sosInfo.X, sosInfo.Y, sosInfo.MapX, sosInfo.MapY))
 			MoveItem(sosInfo.Serial, "backpack")
 			Pause(600)
-			sosInfo.Owner = "backpack"
-		self.UpdateBitmap()
+			sosInfo.SetOwner("backpack")
 		self.ButtonEnable()
 		return
 		
@@ -762,94 +912,9 @@ class XamlWindow(Window):
 		msgBox.Text = message
 		return
 		
-	def UpdateBitmap(self):
-		#print("start UpdateBitmap SOSList: {0}".format(len(self.SOSList)))
-		tiles = self.FacetTile
-		pixelFormat = PixelFormats.Bgr24
-		bitsPerPixel = 24
-		bytesPerPixel = (bitsPerPixel + 7) / 8
-		stride = bytesPerPixel * width
-		buffer = Array.CreateInstance(Byte, width * height * bytesPerPixel)
-		for y in range(height):
-			for x in range(width):
-				bufferIndex = (y * width + x) * bytesPerPixel
-				if tiles[x][y] == 1: #blue
-					buffer[bufferIndex + 0] = 255
-					buffer[bufferIndex + 1] = 0
-					buffer[bufferIndex + 2] = 0
-				else: #green
-					buffer[bufferIndex + 0] = 0
-					buffer[bufferIndex + 1] = 255
-					buffer[bufferIndex + 2] = 0
-
-		if len(self.SOSList) > 0:
-			for sosInfo in self.SOSList:
-				x = sosInfo.MapX
-				y = sosInfo.MapY
-				xStart = max(x - 1, 0)
-				xEnd = min(width - 1, x + 1)
-				yStart = max(y - 1, 0)
-				yEnd = min(height - 1, y + 1)
-				for yi in range(yStart, yEnd):
-					for xi in range(xStart, xEnd):
-						bufferIndex = (yi * width + xi) * bytesPerPixel
-						if sosInfo.Owner == "backpack": #backpack red
-							buffer[bufferIndex + 0] = 0
-							buffer[bufferIndex + 1] = 0
-							buffer[bufferIndex + 2] = 255
-						else: #other yellow
-							buffer[bufferIndex + 0] = 0
-							buffer[bufferIndex + 1] = 255
-							buffer[bufferIndex + 2] = 255
-		
-		if self.CurrentRail != None and len(self.CurrentRail) > 0:
-			for rail in self.CurrentRail: # route white
-				bufferIndex = (rail[1] / 16 * width + rail[0] / 16) * bytesPerPixel
-				buffer[bufferIndex + 0] = 255
-				buffer[bufferIndex + 1] = 255
-				buffer[bufferIndex + 2] = 255
-
-		if self.CurrentSOS != None:
-			x = self.CurrentSOS.MapX
-			y = self.CurrentSOS.MapY
-			
-			for i in range(height):
-				bufferIndex = (i * width + x) * bytesPerPixel
-				buffer[bufferIndex + 0] = 0
-				buffer[bufferIndex + 1] = 255
-				buffer[bufferIndex + 2] = 255
-				
-			for i in range(width):
-				bufferIndex = (y * width + i) * bytesPerPixel
-				buffer[bufferIndex + 0] = 0
-				buffer[bufferIndex + 1] = 255
-				buffer[bufferIndex + 2] = 255
-			
-		if self.LastX != None and self.LastY != None:
-			x = (self.LastX) / 16
-			y = (self.LastY) / 16
-			for i in range(height):
-				bufferIndex = (i * width + x) * bytesPerPixel
-				buffer[bufferIndex + 0] = 0
-				buffer[bufferIndex + 1] = 0
-				buffer[bufferIndex + 2] = 0
-				
-			for i in range(width):
-				bufferIndex = (y * width + i) * bytesPerPixel
-				buffer[bufferIndex + 0] = 0
-				buffer[bufferIndex + 1] = 0
-				buffer[bufferIndex + 2] = 0
-		
-		bitmap = BitmapSource.Create(width, height, 96, 96, pixelFormat, None, buffer, stride)
-		map = self.Content.FindName("map")
-		map.Source = bitmap
-		#print("end UpdateBitmap SOSList: {0}".format(len(self.SOSList)))
-		return
-
 def ShowWindow():
 	try:
 		window = XamlWindow()
-		window.UpdateBitmap()
 		window.ShowDialog()
 	except Exception as e:
 		print e
