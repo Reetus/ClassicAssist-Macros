@@ -268,14 +268,14 @@
     },
     {
         "Name":  "Boat Control UI",
-        "Description":  "Boat control UI like UO rudder for navigating around in a boat, with old text commands (not latest OSI drive-by-mouse)",
+        "Description":  "Boat control UI like UO rudder for navigating around in a boat, with text commands",
         "Author":  "Reetus",
-        "Era":  "UOR",
+        "Era":  "Any",
         "Id":  "0e1636a6-5371-406f-b4ab-e6bac964e8fa",
         "Categories":  "Misc",
         "FileName":  "Misc\\boatcontrolui.py",
-        "Size":  3847,
-        "SHA1":  "D0CCF5B3E69D68F130D960CC25B371682AFF8F18",
+        "Size":  3813,
+        "SHA1":  "0E07991DD7F41D3B4FFD38F9BE61DF80A14769C6",
         "ModifiedDate":  "2022-03-06T01:05:07.9108722+00:00"
     },
     {
