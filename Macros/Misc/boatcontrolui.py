@@ -1,7 +1,7 @@
 # Name: Boat Control UI
-# Description: Boat control UI like UO rudder for navigating around in a boat, with old text commands (not latest OSI drive-by-mouse)
+# Description: Boat control UI like UO rudder for navigating around in a boat, with text commands
 # Author: Reetus
-# Era: UOR
+# Era: Any
 # Date: Wed Dec 01 2021
 
 import wpf
