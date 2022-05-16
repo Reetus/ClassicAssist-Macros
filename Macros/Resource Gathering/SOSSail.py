@@ -1,7 +1,7 @@
 # Name: SOS Sail
 # Description: Sail to SOS Coordiate, in Felucca and Trammel
-#				Sail use A* with 16 x 16 Tile but not perfect
-#				Hunt monster with magery
+#               Sail use A* with 16 x 16 Tile but not perfect
+#               Hunt monster with magery
 # Author: ad960009
 # Era: AOS
 
@@ -18,14 +18,13 @@ clr.AddReference('PresentationCore')
 clr.AddReference('WindowsBase')
 clr.ImportExtensions(System.Linq)
 from System import Uri, TimeSpan, Enum
-from System.Windows import Window, ResourceDictionary
+from System.Windows import Window, ResourceDictionary, Point
 from System.Windows.Markup import XamlReader
-from System.Windows.Shapes import Ellipse, Line
-from System.Windows.Media import ImageBrush, Brushes
+from System.Windows.Shapes import Ellipse, Line, Path
+from System.Windows.Media import ImageBrush, Brushes, PolyLineSegment, PathFigure, PathGeometry, PixelFormats
 from System.Windows.Controls import ToolTip, Canvas
 from System.Threading import Thread, ThreadStart, ApartmentState
 from System import Array, Byte
-from System.Windows.Media import PixelFormats
 from System.Windows.Media.Imaging import BitmapSource
 from System.Windows.Threading import DispatcherTimer
 
@@ -39,7 +38,7 @@ global SOSChestTypes
 
 SOSType = 0x14EE
 PoleType = 0x0DC0
-MonsterTypes = [0x96,0x10,0x4D,0x97,]
+MonsterTypes = [0x96,0x10,0x4D,0x97,0xb6, 0xb5]
 SOSChestTypes = [0xE43, 0xE41, 0xA30A]
 
 global North
@@ -156,7 +155,7 @@ class SOS:
 		else:
 			self.ellipse.Fill = Brushes.Yellow
 			self.ellipse.Stroke = Brushes.Yellow
-		return		
+		return
 
 class Tile:
 	def __init__(self, x, y, parent = None, cost = 0):
@@ -168,6 +167,34 @@ class Tile:
 	def SetDistance(self, targetX, targetY):
 		self.Distance = (abs(self.X - targetX) + abs(self.Y - targetY)) * 10
 		self.CostDistance = self.Cost + self.Distance
+
+def SimplifySailRoute(CurrentRail):
+	railLen = len(CurrentRail)
+	if railLen < 3:
+		return CurrentRail
+
+	prevDir = ""
+	simpleRoute = []
+	#simpleRoute.append(CurrentRail[0])
+	for index in range(1, railLen):
+		dir = ""
+		if CurrentRail[index - 1][1] > CurrentRail[index][1]:
+			dir += "n"
+		elif CurrentRail[index - 1][1] < CurrentRail[index][1]:
+			dir += "s"
+		if CurrentRail[index - 1][0] > CurrentRail[index][0]:
+			dir += "w"
+		elif CurrentRail[index - 1][0] < CurrentRail[index][0]:
+			dir += "e"
+
+		if (prevDir != dir):
+			simpleRoute.append(CurrentRail[index - 1])
+		#print("prev: {}, current({}) {} ".format(prevDir, index, dir))
+		prevDir = dir
+	#if simpleRoute[-1] != CurrentRail[-1]:
+	simpleRoute.append(CurrentRail[-1])
+	return simpleRoute
+
 
 def KillMonsterWithMagery():
 	find = False
@@ -199,7 +226,7 @@ def FindShip():
 	mapTile = GetPlayerFacetTile()
 	if mapTile[X("self") / 16][Y("self") / 16] == 0:
 		return None
-	Resync()		
+	Resync()
 	for i in North:
 		if FindType(i):
 			return North
@@ -230,13 +257,13 @@ def GetWalkableTiles(map, currentTile, targetTile):
 	]
 
 	ret = []
-	
+
 	for possibleTile in possibleTiles:
 		if possibleTile.X >= 0 and possibleTile.Y >= 0 and possibleTile.X < width and possibleTile.Y < height and map[possibleTile.X][possibleTile.Y] == 1:
 			possibleTile.SetDistance(targetTile.X, targetTile.Y)
 			ret.append(possibleTile)
 	return ret
-	
+
 def SearchRoute(map, start, end):
 	print("start SearchRoute")
 	timeStart = time()
@@ -253,20 +280,20 @@ def SearchRoute(map, start, end):
 		return None
 	startTile = Tile(start[0], start[1])
 	endTile = Tile(end[0], end[1])
-	
+
 	startTile.SetDistance(end[0], end[1])
-	
+
 	activeTiles = []
 	visitedTiles = []
 	activeTiles.append(startTile)
-	
+
 	while activeTiles:
 		checkTile = activeTiles[0]
 		for tile in activeTiles:
 			if tile.CostDistance < checkTile.CostDistance:
 				checkTile = tile
 		#checkTile = activeTiles.OrderBy(lambda x: x.GetCostDistance()).First()
-		
+
 		if checkTile.X == end[0] and checkTile.Y == end[1]:
 			ret = []
 			rail = checkTile
@@ -319,7 +346,7 @@ def ParseSOS(sos):
 		loopCnt += 1
 		if loopCnt > 5:
 			return None
-	
+
 	x = None
 	y = None
 	(find, sosGump) = Engine.Gumps.GetGump(SOSGumpID)
@@ -332,7 +359,7 @@ def ParseSOS(sos):
 		yLat = int(m.group(1))
 		yMins = int(m.group(2))
 		ySouth = m.group(3) == "S"
-	
+
 		xCenter = 1323
 		yCenter = 1624
 		xWidth = 5120
@@ -343,10 +370,10 @@ def ParseSOS(sos):
 			absLong = 360 - absLong
 		if not ySouth:
 			absLat = 360 - absLat
-		
+
 		x = xCenter + absLong * xWidth / 360
 		y = yCenter + absLat * yHeight / 360
-	
+
 		if x < 0:
 			x += xWidth
 		if y < 0:
@@ -355,7 +382,7 @@ def ParseSOS(sos):
 			x -= xWidth
 		if y > yHeight:
 			y -= yHeight
-		
+
 		loopCnt = 0
 		while GumpExists(SOSGumpID):
 			ReplyGump(SOSGumpID, 0)
@@ -363,7 +390,7 @@ def ParseSOS(sos):
 			loopCnt += 1
 			if loopCnt > 5:
 				return None
-		
+
 		print("Parse SOS: {} -> ({}, {})".format(sosCoord, x, y))
 		return (x, y)
 	print("Parse SOS failed")
@@ -428,7 +455,7 @@ class XamlWindow(Window):
 		rd.Source = Uri("pack://application:,,,/ClassicAssist.Shared;component/Resources/DarkTheme.xaml")
 		self.Resources.MergedDictionaries.Add(rd)
 		self.Background = self.Resources["ThemeWindowBackgroundBrush"]
-		
+
 		self.Content = XamlReader.Parse(xaml)
 		self.Title = "SOS Sail ad960009 in Margo"
 		self.Width = 500
@@ -436,7 +463,7 @@ class XamlWindow(Window):
 		self.refreshTime = TimeSpan.FromSeconds(1)
 		self.SOSList = []
 		#self.BackpackSOSList = []
-		
+
 		self.events = [
 			("LoadAll", self.ClickLoadAll),
 			("LoadBackpack", self.ClickLoadBackpack),
@@ -446,7 +473,7 @@ class XamlWindow(Window):
 			("MoveNext", self.ClickMoveNext),
 			("DebugButton", self.ClickDebug),
 		]
-		
+
 		for i in self.events:
 			btn = self.Content.FindName(i[0])
 			btn.Click += i[1]
@@ -463,16 +490,16 @@ class XamlWindow(Window):
 		self.timer.Tick += self.tickhandler
 		self.timer.Start()
 		self.FacetTile = GetPlayerFacetTile()
-		
+
 		self.CurrentSOS = None
 		self.CurrentRail = []
 		self.LastX = None
 		self.LastY = None
 		self.State = None
 		self.SailDir = ""
-		
+
 		self.MovingCnt = 0
-		
+
 		self.TraBitmap = self.CreateBitmapSource(traTile)
 		self.FelBitmap = self.CreateBitmapSource(felTile)
 		self.ChangeBackgroudImage()
@@ -494,7 +521,7 @@ class XamlWindow(Window):
 		self.SOSVerticalLine.StrokeThickness = 1
 		self.lineCanvas.Children.Add(self.SOSVerticalLine)
 		return
-	
+
 	def CharMove(self):
 		if Engine.Player.Map == Map.Felucca or Engine.Player.Map == Map.Trammel:
 			self.CharHorizonLine.X1 = 0
@@ -540,12 +567,12 @@ class XamlWindow(Window):
 			self.map.ImageSource = self.FelBitmap
 		else:
 			self.map.ImageSource = self.TraBitmap
-	
+
 	def ResetCanvasChildren(self):
 		self.canvas.Children.Clear()
 		for sosInfo in self.SOSList:
 			self.canvas.Children.Add(sosInfo.ellipse)
-	
+
 	def CreateBitmapSource(self, tiles):
 		pixelFormat = PixelFormats.Bgr24
 		bitsPerPixel = 24
@@ -564,7 +591,7 @@ class XamlWindow(Window):
 					buffer[bufferIndex + 1] = 255
 					buffer[bufferIndex + 2] = 0
 		return BitmapSource.Create(width, height, 96, 96, pixelFormat, None, buffer, stride)
-	
+
 	def Sailing(self, shipDir, currentX, currentY):
 		if len(self.CurrentRail) == 0 or ( self.CurrentRail[0][0] == currentX / 16 and self.CurrentRail[0][0] == currentY / 16):
 			Msg("Stop")
@@ -599,7 +626,7 @@ class XamlWindow(Window):
 				targetDir += "east "
 			else:
 				pass
-		
+
 		if abs(self.CurrentRail[0][1] - currentY) > 2:
 			if (self.CurrentRail[0][1] < currentY):
 				targetDir += "north "
@@ -607,15 +634,15 @@ class XamlWindow(Window):
 				targetDir += "south "
 			else:
 				pass
-		
+
 		if len(targetDir) == 0:
 			self.CurrentRail.pop(0)
-			self.DrawRoute()
+			self.DrawRoute(currentX, currentY)
 			return False
 		#print("target {} : sailDir {}".format(targetDir, self.SailDir))
 		if targetDir == self.SailDir:
 			return
-		
+
 		if shipDir == North and not "north" in targetDir:
 			if not "south" in targetDir:
 				if "west" in targetDir:
@@ -645,7 +672,7 @@ class XamlWindow(Window):
 					Msg("Turn right")
 					return
 			Msg("Turn around")
-			return		
+			return
 		if shipDir == West and not "west" in targetDir:
 			if not "east" in targetDir:
 				if "north" in targetDir:
@@ -653,10 +680,10 @@ class XamlWindow(Window):
 					return
 				if "south" in targetDir:
 					Msg("Turn left")
-					return		
+					return
 			Msg("Turn around")
 			return
-		
+
 		if shipDir == North:
 			if "west" in targetDir:
 				Msg("forward left")
@@ -672,7 +699,7 @@ class XamlWindow(Window):
 				Msg("forward left")
 			else:
 				Msg("forward")
-			return			
+			return
 		if shipDir == West:
 			if "north" in targetDir:
 				Msg("forward right")
@@ -698,7 +725,7 @@ class XamlWindow(Window):
 				return False
 			if FindType(chestType, 0, "backpack"):
 				return False
-		
+
 		if not TimerExists("FishingTimer"):
 			CreateTimer("FishingTimer")
 			SetTimer("FishingTimer", 9000)
@@ -718,26 +745,33 @@ class XamlWindow(Window):
 				Msg("Can't found pole")
 				return False
 		Pole = GetAlias("found")
-		
+
 		UseObject(Pole)
 		#print("use Pole")
 		if WaitForTarget(5000):
 			TargetTileOffsetResource(0, 0, 0)
 		SetTimer("FishingTimer", 0)
 		return
-	def DrawRoute(self):
+	def DrawRoute(self, currentX, currentY):
 		self.routeCanvas.Children.Clear()
+		if (currentX == None or currentY == None):
+			return
+
+		lineSegment = PolyLineSegment()
+		#lineSegment.Points.Add(Point(currentX / 16, currentY / 16))
 		for rail in self.CurrentRail:
-			e = Ellipse()
-			e.Width = 1
-			e.Height = 1
-			e.Fill = Brushes.Magenta
-			e.Stroke = Brushes.Magenta
-			e.ToolTip = ToolTip()
-			Canvas.SetLeft(e, rail[0] / 16 - e.Width)
-			Canvas.SetTop(e, rail[1] /16 - e.Height)
-			self.ellipse = e
-			self.routeCanvas.Children.Add(e)
+			lineSegment.Points.Add(Point(rail[0] / 16, rail[1] / 16))
+
+		pathFigure = PathFigure()
+		pathFigure.StartPoint = Point(currentX / 16, currentY / 16)
+		pathFigure.Segments.Add(lineSegment)
+		pathGeometry = PathGeometry()
+		pathGeometry.Figures.Add(pathFigure)
+		path = Path()
+		path.Stroke = Brushes.Magenta
+		path.StrokeThickness = 2.0
+		path.Data = pathGeometry
+		self.routeCanvas.Children.Add(path)
 
 	def tickhandler(self, sender, args):
 		if Engine.Player.Map != Map.Felucca and Engine.Player.Map != Map.Trammel:
@@ -761,7 +795,7 @@ class XamlWindow(Window):
 		currentY = Y("self")
 		moved = False
 		needRedraw = False
-		
+
 		if (currentX != self.LastX or currentY != self.LastY):
 			moved = True
 			self.MovingCnt = 0
@@ -773,7 +807,7 @@ class XamlWindow(Window):
 		if (self.FacetTile != newTile):
 			self.FacetTile = newTile
 			needRedraw = True
-		
+
 		if self.CurrentSOS != None and not FindObject(self.CurrentSOS.Serial, 0, "backpack"):
 			if self.CurrentSOS in self.SOSList:
 				self.SOSList.remove(self.CurrentSOS)
@@ -782,12 +816,16 @@ class XamlWindow(Window):
 			self.CurrentSOS = None
 			self.ChangeCurrentSOS()
 			self.CurrentRail = []
+			if self.State == "Sail":
+				Msg("stop")
+			self.State = None
+
 		if self.State == "Fishing":
 			if self.Fishing() == False:
 				self.State = None
 
 		elif self.State == "Sail":
-			self.Sailing(shipDir, currentX, currentY)	
+			self.Sailing(shipDir, currentX, currentY)
 		else:
 			if len(self.SOSList) > 0 and (( moved and shipDir != None ) or len(self.CurrentRail) == 0):
 				closedSOS = self.SOSList[0]
@@ -804,12 +842,11 @@ class XamlWindow(Window):
 				if len(self.CurrentRail) == 0 or sosChanged:
 					self.CurrentRail = SearchRoute(self.FacetTile, ((currentX) / 16, (currentY) / 16), (closedSOS.MapX, closedSOS.MapY))
 					if self.CurrentRail == None:
-						self.CurrentRail = []
-						if self.FacetTile[(currentX) / 16][(currentY) / 16] == 0:
-							self.MsgBoxUpdate("Goto deep sea")
-						else:
-							self.MsgBoxUpdate("can't find route")
-					self.DrawRoute()
+						self.CurrentRail = [closedSOS.X, closedSOS.Y]
+						self.MsgBoxUpdate("route found failed. use Coord")
+					else:
+						self.CurrentRail = SimplifySailRoute(self.CurrentRail)
+					self.DrawRoute(currentX, currentY)
 
 		self.LastX = currentX
 		self.LastY = currentY
@@ -818,9 +855,14 @@ class XamlWindow(Window):
 			self.ChangeBackgroudImage()
 		if moved:
 			self.CharMove()
+		if self.State == None and InJournal("gogogo", Name()) and self.CurrentSOS != None:
+			self.State = "Sail"
+			ClearJournal()
+		elif self.State == None:
+			ClearJournal()
 
 		return
-		
+
 	def ButtonDisable(self):
 		for i in self.events:
 			btn = self.Content.FindName(i[0])
@@ -829,7 +871,7 @@ class XamlWindow(Window):
 	def ButtonEnable(self):
 		for i in self.events:
 			btn = self.Content.FindName(i[0])
-			btn.IsEnabled = True		
+			btn.IsEnabled = True
 		return
 	def ClickDebug(self, sender, event):
 		debugmsg = ""
@@ -837,7 +879,7 @@ class XamlWindow(Window):
 		debugmsg += "ShipDir {}, SailDir {}\n".format(FindShip(), self.SailDir)
 		if self.CurrentSOS == None:
 			debugmsg += "self.CurrentSOS: {}\n".format(self.CurrentSOS)
-		else:	
+		else:
 			debugmsg += "self.CurrentSOS: ({}, {})\n".format(self.CurrentSOS.X, self.CurrentSOS.Y)
 		debugmsg += "self.CurrentRail: {}\n".format(len(self.CurrentRail))
 		debugmsg += "self.MovingCnt: {}\n".format(self.MovingCnt)
@@ -845,7 +887,7 @@ class XamlWindow(Window):
 			debugmsg += "self.CurrentRail[0]: ({}, {})\n".format(self.CurrentRail[0][0], self.CurrentRail[0][1])
 			debugmsg += "self.CurrentRail[-1]: ({}, {})\n".format(self.CurrentRail[-1][0], self.CurrentRail[-1][1])
 		self.MsgBoxUpdate(debugmsg)
-		
+
 	def ClickLoadAll(self, sender, event):
 		self.ButtonDisable()
 		self.SOSList = []
@@ -927,22 +969,29 @@ class XamlWindow(Window):
 			sosInfo.SetOwner("backpack")
 		self.ButtonEnable()
 		return
-		
+
 	def MsgBoxUpdate(self, message):
 		msgBox = self.Content.FindName("MsgBox")
 		msgBox.Text = message
 		return
-		
+
 def ShowWindow():
 	try:
 		window = XamlWindow()
+		print("Load done")
 		window.ShowDialog()
 	except Exception as e:
+		print type(e)
 		print e
 	return
 
 felTile = GetMapData(0)
 traTile = GetMapData(1)
+
+
+if FindObject("mount"):
+	if not Property("mount", "guarding"):
+		Msg("all guard me")
 
 t = Thread(ThreadStart(ShowWindow))
 t.SetApartmentState(ApartmentState.STA)
