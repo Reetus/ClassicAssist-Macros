@@ -11,68 +11,56 @@ jobs:
         ref: ${{ github.head_ref }}
     - name: Generate Metadata
       run: |
-        cd Macros
+        Set-Location Macros
 
         $objs = Get-Content -Path "metadata.json" | ConvertFrom-Json
 
         $files = (Get-ChildItem . -Recurse -Filter *.py | Resolve-Path -Relative)
         $filespsobject = @()
-        foreach ( $file in $files )
-        {
-          $f = Get-ItemProperty $file
-          if (!($f -is [System.IO.DirectoryInfo]))
-          {
-            $categories = New-Object System.Collections.ArrayList
+        foreach ( $file in $files ) {
+            $f = Get-ItemProperty $file
+            if (!($f -is [System.IO.DirectoryInfo])) {
+                $array = $file.split("\")  | select-object -skip 1 | select-object -SkipLast 1
 
-            $array = $file.split("\")  | select-object -skip 1 | select-object -SkipLast 1
+                $names = @("Name", "Description", "Author", "Shard", "Era")
 
-            $names = @("Name","Description", "Author","Shard","Era")
+                $item = New-Object -Typename PSObject
 
-            $item = New-Object -Typename PSObject
+                foreach ( $name in $names ) {
 
-            foreach ( $name in $names )
-            {
-
-                $regex = "^#\s$($name):\s(.*)$"
-                $m = (select-string -Path $file -Pattern $regex )
-                if ( $m )
-                {
-                    $item | add-member -MemberType NoteProperty -Name $name -value $m.Matches.Groups[1].Value
+                    $regex = "^#\s$($name):\s(.*)$"
+                    $m = (select-string -Path $file -Pattern $regex )
+                    if ( $m ) {
+                        $item | add-member -MemberType NoteProperty -Name $name -value $m.Matches.Groups[1].Value
+                    }
                 }
-            }
 
+                $existing = [System.Linq.Enumerable]::FirstOrDefault($objs, [Func[object, bool]] { param($x) $x.FileName -eq (($file) -replace "\.\\", "") })
 
-            foreach ($obj in $objs) {
-                if ($obj.Name -eq $item.Name -And $obj.Author -eq $item.Author) {
-                    $existing = $obj;
-                }
-            }
-
-            Write-Host $existing
-
-            if ($existing -eq $null -Or $existing.Id -eq $null) {
                 $guid = (new-guid).Guid
-            } else {
-                $guid = $existing.Id
+
+                if ($null -ne $existing) {
+                    $guid = $existing.Id
+                }
+
+                if ($null -eq $existing -Or $null -eq $existing.ModifiedDate) {
+                    $lastmod = $f.LastWriteTime.ToString("o")
+                }
+                else {
+                    $lastmod = $existing.ModifiedDate
+                }
+
+                $item | add-member -MemberType NoteProperty -Name Id -value $guid
+                $item | add-member -MemberType NoteProperty -Name Categories -value $array
+                $item | add-member -MemberType NoteProperty -Name FileName -value (($file) -replace "\.\\", "")
+                $item | add-member -MemberType NoteProperty -Name Size -value $f.Length
+                $item | add-member -MemberType NoteProperty -Name SHA1 -value (get-filehash -path $f.FullName -Algorithm sha1).Hash
+                $item | add-member -MemberType NoteProperty -Name ModifiedDate -value $lastmod
+
+                $filespsobject += $item
             }
 
-            if ($existing -eq $null -Or $existing.ModifiedDate -eq $null) {
-                $lastmod = $f.LastWriteTime.ToString("o")
-            } else {
-                $lastmod = $existing.ModifiedDate
-            }
-
-            $item | add-member -MemberType NoteProperty -Name Id -value $guid
-            $item | add-member -MemberType NoteProperty -Name Categories -value $array
-            $item | add-member -MemberType NoteProperty -Name FileName -value (($file) -replace "\.\\","")
-            $item | add-member -MemberType NoteProperty -Name Size -value $f.Length
-            $item | add-member -MemberType NoteProperty -Name SHA1 -value (get-filehash -path $f.FullName -Algorithm sha1).Hash
-            $item | add-member -MemberType NoteProperty -Name ModifiedDate -value $lastmod
-
-            $filespsobject += $item
-          }
-
-          $json = $filespsobject | convertto-json
+            $json = $filespsobject | convertto-json
         }
         $json | Out-File metadata.json -Encoding utf8
       shell: powershell
