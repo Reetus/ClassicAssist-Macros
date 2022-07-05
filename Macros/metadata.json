@@ -351,6 +351,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9128740+00:00"
     },
     {
+        "Name":  "Train Chivalry",
+        "Description":  "This will train your Chivalry to 120.",
+        "Author":  "OnlyAware",
+        "Shard":  "UO Dreams World",
+        "Id":  "f5df00f3-d782-4b0a-ae08-887ee3e37354",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\trainchivalry.py",
+        "Size":  729,
+        "SHA1":  "1643F3E52F9E955B3F233CCD86395C6F96A7C8DD",
+        "ModifiedDate":  "2022-07-05T04:32:00.4842116+00:00"
+    },
+    {
         "Name":  "Animal Taming training",
         "Description":  "Tames nearby animals to train Animal Taming to GM (to 90 by default) with healing, killing and basic pathfinding",
         "Author":  "Mordor",
