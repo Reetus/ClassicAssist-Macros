@@ -204,6 +204,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9098735+00:00"
     },
     {
+        "Name":  "Smelt Items",
+        "Description":  "Smelts all items of a specified type",
+        "Author":  "Bittiez",
+        "Shard":  "Ruins and Riches",
+        "Id":  "e86cc442-3292-442e-babf-1fd2c754b182",
+        "Categories":  "Crafting",
+        "FileName":  "Crafting\\smeltitems.py",
+        "Size":  679,
+        "SHA1":  "E031C2445B64ACAC5E0448C16B31134137A89B7C",
+        "ModifiedDate":  "2022-07-06T02:58:35.1021324+00:00"
+    },
+    {
         "Name":  "Potion Factory",
         "Description":  "Crafts the selected potion up to the selected maximum amount",
         "Author":  "Reetus",
@@ -313,6 +325,18 @@
         "Size":  3234,
         "SHA1":  "47DEE5F03C211F23FB8872F5177CFD9DA04B753A",
         "ModifiedDate":  "2022-03-06T01:05:07.9118728+00:00"
+    },
+    {
+        "Name":  "Lumberjack Near Me",
+        "Description":  "Attempts to chop all trees in a 10x10 area around you",
+        "Author":  "Bittiez",
+        "Shard":  "Ruins and Riches",
+        "Id":  "eb580959-6437-4f89-aa96-855bf6e8b35a",
+        "Categories":  "Resource Gathering",
+        "FileName":  "Resource Gathering\\lumberjackarea.py",
+        "Size":  3191,
+        "SHA1":  "F0649C2330D50710BFD23DED415EF44640478605",
+        "ModifiedDate":  "2022-07-06T02:58:35.1051314+00:00"
     },
     {
         "Name":  "SOS Sail",
@@ -520,6 +544,18 @@
         "Size":  2810,
         "SHA1":  "9A5F41F4D0844165CEDC08CAAFC7673685447FA9",
         "ModifiedDate":  "2022-03-06T01:05:07.9178730+00:00"
+    },
+    {
+        "Name":  "Make Last Item",
+        "Description":  "Asks you how many items you would like to make using make last",
+        "Author":  "Bittiez",
+        "Shard":  "Ruins and Riches",
+        "Id":  "d53637b3-6f35-4993-8a73-96596dd4427b",
+        "Categories":  "Skills Crafting",
+        "FileName":  "Skills Crafting\\makelastcount.py",
+        "Size":  366,
+        "SHA1":  "E4B559626950D41BD13F5D2AC3CEAECE032FA87F",
+        "ModifiedDate":  "2022-07-06T02:58:35.1071303+00:00"
     },
     {
         "Name":  "Simple Miner",
