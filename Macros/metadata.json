@@ -363,6 +363,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9128740+00:00"
     },
     {
+        "Name":  "Arms Lore Training",
+        "Description":  "Used for training arms lore on as many items as you wish",
+        "Author":  "bittiez",
+        "Shard":  "Ruins and Riches",
+        "Id":  "f7c21880-6fac-4d5f-b3f8-d5677c167cc8",
+        "Categories":  "Skill Training",
+        "FileName":  "Skill Training\\armsloretraining.py",
+        "Size":  836,
+        "SHA1":  "715AE678285165D1043E4F47F8D6349CC1BBF7CB",
+        "ModifiedDate":  "2022-07-06T02:41:22.3132858+00:00"
+    },
+    {
         "Name":  "Train Chivalry",
         "Description":  "This will train your Chivalry to 120.",
         "Author":  "OnlyAware",
