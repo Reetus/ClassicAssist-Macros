@@ -168,6 +168,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9088737+00:00"
     },
     {
+        "Name":  "Make Last and Sell",
+        "Description":  "This will use make last in a crafting gump, and attempt to sell to a nearby vendor",
+        "Author":  "Bittiez",
+        "Shard":  "Ruins and Riches",
+        "Id":  "6a89218b-d33c-4ce4-b6ee-59b876a1779b",
+        "Categories":  "Crafting",
+        "FileName":  "Crafting\\makelastsell.py",
+        "Size":  701,
+        "SHA1":  "473EF47D8C48F00D5A1DA565984EA3030A600CB5",
+        "ModifiedDate":  "2022-07-06T02:40:20.1061813+00:00"
+    },
+    {
         "Name":  "Potion Maker",
         "Description":  "Crafts selected potions up to selected amounts",
         "Author":  "Kakagriss",
