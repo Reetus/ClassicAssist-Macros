@@ -7,7 +7,7 @@ res, amt = MessagePrompt("How many times would you like to make last item?", "50
 
 if res:
     i = 0
-    while i < amt:
+    while i < int(amt):
         ReplyGump(0x38920abd, 21)
         WaitForGump(0x38920abd, 10000)
         i += 1
