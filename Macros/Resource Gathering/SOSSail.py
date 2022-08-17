@@ -270,7 +270,7 @@ def SearchRoute(map, start, end):
 
 	ret = []
 	ret.append((start[0] * 16 + 8, start[1] * 16 + 8))
-	ret.append((end[1] * 16 + 8, end[1] * 16 + 8))
+	ret.append((end[0] * 16 + 8, end[1] * 16 + 8))
 
 	if start[0] < 0 or width - 1 < start[0] or start[1] < 0 or height - 1 < start[1]:
 		print("start position Error ({}, {})".format(start[0], start[1]))
