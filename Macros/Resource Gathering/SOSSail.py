@@ -267,17 +267,22 @@ def GetWalkableTiles(map, currentTile, targetTile):
 def SearchRoute(map, start, end):
 	print("start SearchRoute")
 	timeStart = time()
+
+	ret = []
+	ret.append((start[0] * 16 + 8, start[1] * 16 + 8))
+	ret.append((end[0] * 16 + 8, end[1] * 16 + 8))
+
 	if start[0] < 0 or width - 1 < start[0] or start[1] < 0 or height - 1 < start[1]:
 		print("start position Error ({}, {})".format(start[0], start[1]))
-		return None
+		return ret
 	if end[0] < 0 or width - 1 < end[0] or end[1] < 0 or height - 1 < end[1]:
 		print("start position Error ({}, {})".format(end[0], end[1]))
-		return None
+		return ret
 	if map[start[0]][start[1]] != 1 or map[end[0]][end[1]] != 1:
 		print("start position Error ({}, {})".format(start[0], start[1]))
 		print("end position Error ({}, {})".format(end[0], end[1]))
 		print("failed SearchRoute start({}) end({})".format(map[start[0]][start[1]], map[end[0]][end[1]]))
-		return None
+		return ret
 	startTile = Tile(start[0], start[1])
 	endTile = Tile(end[0], end[1])
 
@@ -842,7 +847,7 @@ class XamlWindow(Window):
 				if len(self.CurrentRail) == 0 or sosChanged:
 					self.CurrentRail = SearchRoute(self.FacetTile, ((currentX) / 16, (currentY) / 16), (closedSOS.MapX, closedSOS.MapY))
 					if self.CurrentRail == None:
-						self.CurrentRail = [closedSOS.X, closedSOS.Y]
+						self.CurrentRail = [(closedSOS.X, closedSOS.Y)]
 						self.MsgBoxUpdate("route found failed. use Coord")
 					else:
 						self.CurrentRail = SimplifySailRoute(self.CurrentRail)
