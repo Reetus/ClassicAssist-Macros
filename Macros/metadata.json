@@ -399,6 +399,18 @@
         "ModifiedDate":  "2022-07-06T02:41:22.3132858+00:00"
     },
     {
+        "Name":  "Lockpick training helper",
+        "Description":  "set the key, box. Have alot of lockpicks, run script.",
+        "Author":  "merlottt",
+        "Shard":  "uogames.org",
+        "Id":  "d2921dca-e8b0-4ee3-be8e-44e9565f7ddb",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\lockpicktraininghelper.py",
+        "Size":  760,
+        "SHA1":  "B340C28A9A589E5D39A512EB906EE1F939CFCAC4",
+        "ModifiedDate":  "2022-11-16T00:17:36.7562076+00:00"
+    },
+    {
         "Name":  "Train Chivalry",
         "Description":  "This will train your Chivalry to 120.",
         "Author":  "OnlyAware",
