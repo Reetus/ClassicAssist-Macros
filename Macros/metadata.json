@@ -423,6 +423,18 @@
         "ModifiedDate":  "2022-07-05T04:32:00.4842116+00:00"
     },
     {
+        "Name":  "Train Necromancy",
+        "Description":  "you need Wraith,Horrific and Lich form spells",
+        "Author":  "merlottt",
+        "Shard":  "uogames.org",
+        "Id":  "deaac96f-01b4-4f39-a7c5-fc9004f8e971",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\trainnecromancy.py",
+        "Size":  522,
+        "SHA1":  "204D9E850A4025F5A85D76024A1038FB81B04844",
+        "ModifiedDate":  "2022-11-22T00:55:01.1644346+00:00"
+    },
+    {
         "Name":  "Animal Taming training",
         "Description":  "Tames nearby animals to train Animal Taming to GM (to 90 by default) with healing, killing and basic pathfinding",
         "Author":  "Mordor",
