@@ -435,6 +435,21 @@
         "ModifiedDate":  "2022-11-22T00:55:01.1644346+00:00"
     },
     {
+        "Name":  "Pet Skills Window",
+        "Description":  "Pet skills window similiar to skills tab showing value / cap / delta, useful when training pets",
+        "Author":  "Reetus",
+        "Shard":  "Margo",
+        "Id":  "6b927437-1730-4750-b3a5-297a119b4989",
+        "Categories":  [
+                           "Skills",
+                           "Animal Lore"
+                       ],
+        "FileName":  "Skills\\Animal Lore\\petskillswindow.py",
+        "Size":  6041,
+        "SHA1":  "B8F91E838F39CEA45DC138E4172E2DDBD088672A",
+        "ModifiedDate":  "2023-01-16T03:13:29.7346409+00:00"
+    },
+    {
         "Name":  "Animal Taming training",
         "Description":  "Tames nearby animals to train Animal Taming to GM (to 90 by default) with healing, killing and basic pathfinding",
         "Author":  "Mordor",
