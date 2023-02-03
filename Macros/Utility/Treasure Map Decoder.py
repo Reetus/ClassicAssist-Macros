@@ -1,8 +1,7 @@
 # Name: Treasure Map Decoder 001
 # Description: Decodes treasure maps and display runebook number
-# Author: qkdefus
-# Shard: Any
-# Date: 10/1-2023
+# Author: qk
+# Date: 3/2-2023
 
 import clr
 import System
@@ -11,6 +10,10 @@ from ClassicAssist.UO.Data import PacketWriter, PacketReader
 from ClassicAssist.UO.Network.PacketFilter import PacketFilterInfo, PacketFilterCondition, PacketFilterConditions, PacketDirection
 from Assistant import Engine
 from ClassicAssist.UO import UOMath
+
+import ClassicAssist 
+clr.ImportExtensions(ClassicAssist.Misc)
+from System.Threading.Tasks import Task
 
 colorRed = 33
 colorOrange = 43
@@ -119,7 +122,7 @@ tMapCoords = [
     '96 1764 2431',
     '97 1701 2318',
     '98 1653 2304',
-    '99 2060 2144',
+    '99 2060 2144', #
     '100 2105 2124',
     '101 2097 2101',
     '102 2128 2108',
@@ -231,17 +234,32 @@ def GetValidMap(serial, id):
 
 def getMapLocation(serial, timeout = 5000):
     pfiMapDetails = PacketFilterInfo(0x90, System.Array[PacketFilterCondition]([PacketFilterConditions.IntAtPositionCondition(serial, 1)]))
+    pfiMapDetailsNew = PacketFilterInfo(0xF5, System.Array[PacketFilterCondition]([PacketFilterConditions.IntAtPositionCondition(serial, 1)]))
+    
     pfiMapPlot = PacketFilterInfo(0x56, System.Array[PacketFilterCondition]([PacketFilterConditions.IntAtPositionCondition(serial, 1),PacketFilterConditions.ByteAtPositionCondition(1, 5)]))
     
     pweMapDetails = Engine.PacketWaitEntries.Add(pfiMapDetails, PacketDirection.Incoming, True)
+    pweMapDetailsNew = Engine.PacketWaitEntries.Add(pfiMapDetailsNew, PacketDirection.Incoming, True) 
+    
     pweMapPlot = Engine.PacketWaitEntries.Add(pfiMapPlot, PacketDirection.Incoming, True)
+    
+    t = Task.WhenAny(pweMapDetails.Lock.ToTask(), pweMapDetailsNew.Lock.ToTask())
     
     UseObject(serial)
     
-    if not pweMapDetails.Lock.WaitOne(timeout):
-        return (-1, -1, -1)
+    t.Wait()
     
-    reader = PacketReader(pweMapDetails.Packet, pweMapDetails.Packet.Length, True)
+    packet = None
+    
+    if pweMapDetails.Packet == None:
+        packet = pweMapDetailsNew.Packet
+    else:
+        packet = pweMapDetails.Packet
+    
+    #if not pweMapDetails.Lock.WaitOne(timeout):
+    #    return (-1, -1, -1)
+    
+    reader = PacketReader(packet, packet.Length, True)
     reader.ReadInt32()
     image = reader.ReadInt16()
     x1 = reader.ReadUInt16()
@@ -295,6 +313,6 @@ for i in tMapCoords:
             mapNr = _nr
 
 if mapNr != 0:
-    SysMessage('TMap #{}'.format(mapNr), colorGreen)
+    SysMessage('Decoded TMap #{}'.format(mapNr), colorGreen)
 else:
     SysMessage('Unable To Decode TMap', colorRed)
