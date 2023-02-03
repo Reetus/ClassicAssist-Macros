@@ -1,5 +1,6 @@
 # Name: Treasure Map Decoder 001
 # Description: Decodes treasure maps and display runebook number
+# Shard: Any 
 # Author: qk
 # Date: 3/2-2023
 
