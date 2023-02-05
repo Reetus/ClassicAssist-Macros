@@ -655,5 +655,17 @@
         "Size":  444,
         "SHA1":  "ACDF04EB0F35CC7D118368764D0C0F1B35C22703",
         "ModifiedDate":  "2022-03-06T01:05:07.9198759+00:00"
+    },
+    {
+        "Name":  "Treasure Map Decoder 001",
+        "Description":  "Decodes treasure maps and display runebook number",
+        "Author":  "qk",
+        "Shard":  "Any ",
+        "Id":  "9c469cba-0107-40ce-a7f0-0df222f70963",
+        "Categories":  "Utility",
+        "FileName":  "Utility\\Treasure Map Decoder.py",
+        "Size":  8203,
+        "SHA1":  "34BEE431E648A1F4C34496D3513C6E3EA9D6BE1F",
+        "ModifiedDate":  "2023-02-05T04:32:07.0803201+00:00"
     }
 ]
