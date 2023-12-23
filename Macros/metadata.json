@@ -192,6 +192,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9098735+00:00"
     },
     {
+        "Name":  "Recall Mining Margo Ver",
+        "Description":  "2타일 내 마이닝 수행 ",
+        "Author":  "LastEnvoy",
+        "Shard":  "Margo",
+        "Id":  "6ffb6dc7-1f42-40a8-acdc-69fe54d19763",
+        "Categories":  "Crafting",
+        "FileName":  "Crafting\\recallminingmargover.py",
+        "Size":  5518,
+        "SHA1":  "0F40614850DB134EFFC1AE7982202C620D88D5CC",
+        "ModifiedDate":  "2023-12-23T08:19:03.9827845+00:00"
+    },
+    {
         "Name":  "Scroll Maker",
         "Description":  "Crafts selected scrolls up to selected amount. Read instructions",
         "Author":  "Kakagriss",
