@@ -411,6 +411,18 @@
         "ModifiedDate":  "2022-07-06T02:41:22.3132858+00:00"
     },
     {
+        "Name":  "Circuit Trap Solver",
+        "Description":  "Solves the \u0027Circuit Trap Training Kit\u0027 by checking the gump elements for available moves, remembering successful ones, and removing failed moves from available moves, only tested on UOAlive",
+        "Author":  "Reetus",
+        "Shard":  "UOAlive",
+        "Id":  "dbb2059e-0cdc-4cb7-bf8d-25a608df0f8f",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\circuittrapsolver.py",
+        "Size":  2309,
+        "SHA1":  "1DD427DD646C814D6EC1BDDDF7958B45B7512F08",
+        "ModifiedDate":  "2024-02-11T03:53:51.3654346+00:00"
+    },
+    {
         "Name":  "Lockpick training helper",
         "Description":  "set the key, box. Have alot of lockpicks, run script.",
         "Author":  "merlottt",
