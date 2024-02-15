@@ -13,6 +13,7 @@ type = Graphic(GetAlias("smeltItem"))
 
 ClearIgnoreList()
 while FindType(type, -1, "backpack"):
+    CancelTarget()
     ReplyGump(0x38920abd, 14)
     WaitForTarget(5000)
     Target("found")
