@@ -12,9 +12,9 @@ PromptAlias("smeltItem")
 type = Graphic(GetAlias("smeltItem"))
 
 ClearIgnoreList()
-for item in type:
-    while FindType(item, -1, "backpack"):
-        ReplyGump(0x38920abd, 14)
-        WaitForTarget(5000)
-        Target("found")
-        WaitForGump(0x38920abd, 5000)
+while FindType(type, -1, "backpack"):
+    CancelTarget()
+    ReplyGump(0x38920abd, 14)
+    WaitForTarget(5000)
+    Target("found")
+    WaitForGump(0x38920abd, 5000)
