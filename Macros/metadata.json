@@ -447,6 +447,18 @@
         "ModifiedDate":  "2022-07-05T04:32:00.4842116+00:00"
     },
     {
+        "Name":  "Training Magery",
+        "Description":  "Train magery skill until the goal you want.",
+        "Author":  "Lissandro",
+        "Shard":  "UOG-Demise",
+        "Id":  "1ec5340d-b09a-4248-9fb1-461d4a646404",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\trainingmagery.py",
+        "Size":  1117,
+        "SHA1":  "E0205573C60BF0DE61FD7FFF83D148E5FED61DA2",
+        "ModifiedDate":  "2024-08-29T02:48:14.3795596+00:00"
+    },
+    {
         "Name":  "Train Necromancy",
         "Description":  "you need Wraith,Horrific and Lich form spells",
         "Author":  "merlottt",
