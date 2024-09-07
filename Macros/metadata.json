@@ -657,6 +657,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9188735+00:00"
     },
     {
+        "Name":  "JelweryBox Filter",
+        "Description":  "open, load, scan, drop item from jelwery box based on props array setted on code (version with gui)",
+        "Author":  "... d0tsd0tsd0ts",
+        "Shard":  "UOG-Demise",
+        "Id":  "9f2e89ee-2905-4976-a1d6-503c5731fc46",
+        "Categories":  "Utility",
+        "FileName":  "Utility\\jelweryboxfilter.py",
+        "Size":  8991,
+        "SHA1":  "1CA8632C71332F3CA62260C9B0EFCE7E5F3F01BC",
+        "ModifiedDate":  "2024-09-07T02:27:09.1109946+00:00"
+    },
+    {
         "Name":  "Recall Buyer",
         "Description":  "Buys everything in your active AutoBuy agent and goes through given runebooks. Read instructions.",
         "Author":  "Kakagriss",
