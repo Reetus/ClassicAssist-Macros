@@ -339,6 +339,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9118728+00:00"
     },
     {
+        "Name":  "Collect BS/Tailor Deeds",
+        "Description":  "Collects Tailor and BS deeds from Luna NPCs, move them do BOD named BS and Tailor respectively  and logout.",
+        "Author":  "MatheusPPfitscher",
+        "Shard":  "UOG-Demise",
+        "Id":  "3c115b27-1398-420f-8855-3b4717edd26d",
+        "Categories":  "Resource Gathering",
+        "FileName":  "Resource Gathering\\CollectDeedsLuna.py",
+        "Size":  1222,
+        "SHA1":  "F17CBA6E05F547EE71F8D82B81E0B5B4147EBD78",
+        "ModifiedDate":  "2024-10-06T09:46:23.8858978+00:00"
+    },
+    {
         "Name":  "Lumberjack Near Me",
         "Description":  "Attempts to chop all trees in a 10x10 area around you",
         "Author":  "Bittiez",
