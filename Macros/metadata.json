@@ -340,14 +340,14 @@
     },
     {
         "Name":  "Collect BS/Tailor Deeds",
-        "Description":  "Collects Tailor and BS deeds from Luna NPCs, move them do BOD named BS and Tailor respectively  and logout.",
+        "Description":  "Collects Tailor and BS deeds from Luna NPCs, move them do Bulk Order Book named BS and Tailor respectively  and logout.",
         "Author":  "MatheusPPfitscher",
         "Shard":  "UOG-Demise",
         "Id":  "3c115b27-1398-420f-8855-3b4717edd26d",
         "Categories":  "Resource Gathering",
         "FileName":  "Resource Gathering\\CollectDeedsLuna.py",
-        "Size":  1222,
-        "SHA1":  "F17CBA6E05F547EE71F8D82B81E0B5B4147EBD78",
+        "Size":  1407,
+        "SHA1":  "D5865C3207B4A07D4C40EDA08B212D280410AFCC",
         "ModifiedDate":  "2024-10-06T09:46:23.8858978+00:00"
     },
     {
@@ -457,6 +457,18 @@
         "Size":  729,
         "SHA1":  "1643F3E52F9E955B3F233CCD86395C6F96A7C8DD",
         "ModifiedDate":  "2022-07-05T04:32:00.4842116+00:00"
+    },
+    {
+        "Name":  "Training",
+        "Description":  "Training inscription from 30 to 100",
+        "Author":  "Lissandro",
+        "Shard":  "UOG-Demise",
+        "Id":  "ed21069c-6ed6-497f-ba8f-46a595145a4e",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\training.py",
+        "Size":  6454,
+        "SHA1":  "3CE7CD8749183D8F4C9E43435B5475475F0E43B4",
+        "ModifiedDate":  "2024-11-05T00:21:47.2017539+00:00"
     },
     {
         "Name":  "Training Magery",
