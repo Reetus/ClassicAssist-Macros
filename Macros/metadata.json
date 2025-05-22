@@ -693,6 +693,18 @@
         "ModifiedDate":  "2024-09-07T02:27:09.1109946+00:00"
     },
     {
+        "Name":  "Macro UI Customize",
+        "Description":  "매크로 사용자 UI 를 만듭니다",
+        "Author":  "yangpa",
+        "Shard":  "Margo",
+        "Id":  "9388d657-1a61-45d9-a0a9-54f7990e4ba5",
+        "Categories":  "Utility",
+        "FileName":  "Utility\\MacroUI.py",
+        "Size":  2820,
+        "SHA1":  "C090B02451B0E011EDEB3461C26C3CFD56D9202B",
+        "ModifiedDate":  "2025-05-22T21:56:29.7087947+00:00"
+    },
+    {
         "Name":  "Recall Buyer",
         "Description":  "Buys everything in your active AutoBuy agent and goes through given runebooks. Read instructions.",
         "Author":  "Kakagriss",
