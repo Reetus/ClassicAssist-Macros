@@ -156,6 +156,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9068711+00:00"
     },
     {
+        "Name":  "Carpentry from 30 to 100",
+        "Description":  "This macro is designed to help you level up your Carpentry skill.",
+        "Author":  "angeloghiotto",
+        "Shard":  "The crossroads ",
+        "Id":  "c1cf4379-b520-4aaf-8ada-487e776d75bf",
+        "Categories":  "Crafting",
+        "FileName":  "Crafting\\carpentryfrom3to1.py",
+        "Size":  3490,
+        "SHA1":  "B2E748333DB44894FFD04ACA654A4B0E2D299C41",
+        "ModifiedDate":  "2025-06-06T00:21:43.4346453+00:00"
+    },
+    {
         "Name":  "Lumberjacker ",
         "Description":  "Use runic atlas (3 or 4) with 48 runes on each, 1 hatchet, full LRC suit",
         "Author":  "ziox-b (inspired by \"Cray\" script)",
