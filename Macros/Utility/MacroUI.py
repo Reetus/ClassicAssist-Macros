@@ -56,6 +56,8 @@ class MacroUI(Gump):
         
         self.running = True
         self.SendGump()
+    def Hide(self, o, ea):
+    	self.CloseGump()
         
 
 # Example usage:
@@ -75,7 +77,7 @@ labels = [
 # Initialize the custom Gump
 UI = MacroUI(0, 0, 0, 987654)
 UI.Show(options, labels, MacroManager.GetInstance().CurrentMacro.Name)
-
+Events.Shutdown += UI.Hide
 # TestCode
 while True:
   for i in options:
