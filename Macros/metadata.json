@@ -495,6 +495,18 @@
         "ModifiedDate":  "2024-08-29T02:48:14.3795596+00:00"
     },
     {
+        "Name":  "Training Spelweaving",
+        "Description":  "Insert your goal skill and press play to start training spelweaving",
+        "Author":  "Lissandro",
+        "Shard":  "The Crossroads",
+        "Id":  "1cd753f5-6d89-4150-9d6e-e0ae23104d2a",
+        "Categories":  "Skills",
+        "FileName":  "Skills\\trainingspelweaving.py",
+        "Size":  2086,
+        "SHA1":  "687B6CC2656F7ACF7AD24322CA186E847CBF452A",
+        "ModifiedDate":  "2025-08-01T10:44:05.7559929+00:00"
+    },
+    {
         "Name":  "Train Necromancy",
         "Description":  "you need Wraith,Horrific and Lich form spells",
         "Author":  "merlottt",
