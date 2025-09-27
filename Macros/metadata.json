@@ -375,6 +375,18 @@
         "ModifiedDate":  "2022-07-06T02:58:35.1051314+00:00"
     },
     {
+        "Name":  "Mining Random Macro",
+        "Description":  "#MACRO MINER RANDOM ULTIMA MEMENTO/ODYSSEY/RNR",
+        "Author":  "Matayosl",
+        "Shard":  "Memento/Odyssey/RnR",
+        "Id":  "312c6367-fa14-4ffa-95b9-dc4ab264826a",
+        "Categories":  "Resource Gathering",
+        "FileName":  "Resource Gathering\\miningrandommacro.py",
+        "Size":  2572,
+        "SHA1":  "DD514E7B8D006A750A520D297663159B71B7140A",
+        "ModifiedDate":  "2025-09-27T05:53:55.6211317+00:00"
+    },
+    {
         "Name":  "SOS Sail",
         "Description":  "Sail to SOS Coordiate, in Felucca and Trammel",
         "Author":  "ad960009",
