@@ -351,6 +351,18 @@
         "ModifiedDate":  "2022-03-06T01:05:07.9118728+00:00"
     },
     {
+        "Name":  "Auto-Track Cotton Gathering",
+        "Description":  "Auto-Track Cotton Gathering",
+        "Author":  "zny05",
+        "Shard":  "New World 2025",
+        "Id":  "597e2409-680c-4d18-a2e7-8b88b1a8ff8f",
+        "Categories":  "Resource Gathering",
+        "FileName":  "Resource Gathering\\autotrackcottongathering.py",
+        "Size":  2766,
+        "SHA1":  "BC3C9130F90E2AF56EE2C32A1703F8F93EDEF36B",
+        "ModifiedDate":  "2026-08-09T08:03:28.5703771+00:00"
+    },
+    {
         "Name":  "Collect BS/Tailor Deeds",
         "Description":  "Collects Tailor and BS deeds from Luna NPCs, move them do Bulk Order Book named BS and Tailor respectively  and logout.",
         "Author":  "MatheusPPfitscher",
